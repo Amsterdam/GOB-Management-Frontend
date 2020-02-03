@@ -53,11 +53,12 @@ export default {
     async start() {
       this.result = null;
 
-      let user = null;
+      let user = "onbekende gebruiker";
       const userInfo = await auth.userInfo();
       if (userInfo) {
         user = userInfo.preferred_username;
       }
+      user = `${user} (Iris)`;
 
       this.result = await createJob(
         this.action,
