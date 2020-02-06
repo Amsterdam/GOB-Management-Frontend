@@ -51,6 +51,11 @@
               />
             </b-btn>
           </div>
+          <job-sorter
+            v-if="allJobs"
+            :job="allJobs[0]"
+            :sort="sort"
+          ></job-sorter>
           <div class="mt-3">
             <job-filter :filter="filter" :jobs="jobs"></job-filter>
           </div>
@@ -115,6 +120,7 @@ import { connect, disconnect, subscribe } from "../services/sockets";
 
 import { getJobs, logsForJob, jobRunsOnDate } from "../services/gob";
 import FilterOverview from "../components/FilterOverview";
+import JobSorter from "../components/JobSorter";
 
 export default {
   name: "entities",
@@ -140,6 +146,10 @@ export default {
         name: [],
         messageTypes: []
       },
+      sort: {
+        field: null,
+        direction: 1
+      },
 
       date: null,
       activeCollapseId: null,
@@ -149,6 +159,7 @@ export default {
     };
   },
   components: {
+    JobSorter,
     FilterOverview,
     JobCalendar,
     JobHeader,
@@ -161,6 +172,14 @@ export default {
       const jobKey = j => (j[key] || "").toLowerCase().replace(/_/g, " ");
       return (
         this.filter[key].length === 0 || this.filter[key].includes(jobKey(job))
+      );
+    },
+
+    sortJobs() {
+      this.filteredJobs.sort((a, b) =>
+        a[this.sort.field] > b[this.sort.field]
+          ? this.sort.direction
+          : -this.sort.direction
       );
     },
 
@@ -335,6 +354,13 @@ export default {
     filter: {
       handler() {
         this.onFilterChange();
+      },
+      deep: true
+    },
+
+    sort: {
+      handler() {
+        this.sortJobs();
       },
       deep: true
     }
