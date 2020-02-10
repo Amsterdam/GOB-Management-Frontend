@@ -7,3 +7,7 @@ export function get_api() {
   }
   return `${location.protocol}//${base}/`;
 }
+
+export function get_gob_api() {
+  return get_api().replace("8143", "8141");
+}

@@ -138,6 +138,13 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col">
+              <div class="align-center mt-5">
+                <db-info></db-info>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="col">
           <service-detail :services="services"></service-detail>
@@ -156,12 +163,13 @@ import { services, isAlive } from "../services/status";
 import StatusIndicator from "./StatusIndicator";
 import ServiceDetail from "./ServiceDetail";
 import Queues from "./Queues";
+import DbInfo from "./DbInfo";
 
 const REFRESH_INTERVAL = 5000;
 
 export default {
   name: "StatusReport",
-  components: { Queues, ServiceDetail, StatusIndicator },
+  components: { DbInfo, Queues, ServiceDetail, StatusIndicator },
   props: {
     size: String
   },
