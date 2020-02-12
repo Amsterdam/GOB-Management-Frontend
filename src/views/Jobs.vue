@@ -176,11 +176,13 @@ export default {
     },
 
     sortJobs() {
-      this.filteredJobs.sort((a, b) =>
-        a[this.sort.field] > b[this.sort.field]
-          ? this.sort.direction
-          : -this.sort.direction
-      );
+      if (this.sort.field) {
+        this.filteredJobs.sort((a, b) =>
+          a[this.sort.field] > b[this.sort.field]
+            ? this.sort.direction
+            : -this.sort.direction
+        );
+      }
     },
 
     applyFilter() {
@@ -206,6 +208,7 @@ export default {
             this.filter.messageTypes.reduce((s, t) => s + job[t], 0) > 0)
         );
       });
+      this.sortJobs();
     },
 
     async loadDays() {
