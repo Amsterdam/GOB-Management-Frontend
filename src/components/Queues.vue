@@ -50,20 +50,6 @@
 import { getQueues, purgeQueue } from "../services/gob";
 import auth from "../services/auth";
 
-const ORDER = [
-  "prepare",
-  "import",
-  "compare",
-  "fullupdate",
-  "apply",
-  "relate",
-  "check_relation",
-  "export",
-  "export_test",
-  "heartbeat",
-  "logs"
-];
-
 export default {
   name: "Queues",
   data() {
@@ -82,7 +68,8 @@ export default {
         .replace(".queue", "")
         .replace("gob.workflow.", "")
         .replace("gob.status.", "")
-        .replace("gob.log.", "");
+        .replace("gob.log.", "")
+        .replace("gob.", "");
       return queue;
     },
     async purgeQueue(queue) {
@@ -95,11 +82,9 @@ export default {
         .filter(q => !q.name.includes(".task"))
         .filter(q => !q.name.includes(".complete"))
         .filter(q => !q.name.includes(".result"))
+        .filter(q => !q.name.includes("audit.logs"))
         .map(q => this.std_queue(q))
-        .filter(q => ORDER.indexOf(q.display) >= 0)
-        .sort(
-          (q1, q2) => ORDER.indexOf(q1.display) - ORDER.indexOf(q2.display)
-        );
+        .sort((a, b) => (a.display < b.display ? -1 : 1));
     }
   },
   async mounted() {
