@@ -37,11 +37,7 @@ node('GOBBUILD') {
         stage("Build image") {
             tryStep "build", {
                 docker.withRegistry("${DOCKER_REGISTRY_HOST}",'docker_registry_auth') {
-                    def image = docker.build("${DOCKER_IMAGE_NAME}",
-                        "--no-cache " +
-                        "--shm-size 1G " +
-                        "--build-arg BUILD_ENV=acc" +
-                        " src")
+                    def image = docker.build("${DOCKER_IMAGE_NAME}", "--no-cache .")
                     image.push()
                 }
             }
