@@ -14,6 +14,9 @@
     >
       {{ level }} {{ job[level] }}
     </b-badge>
+    <div v-if="job.attribute" class="small mt-n1">
+      {{ job.attribute }}
+    </div>
     <div>
       <span>{{ job.starttime | formatdate }} (</span>
       <span v-if="job.brutoDuration"

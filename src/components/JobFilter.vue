@@ -99,7 +99,8 @@ export default {
         { text: "Type verwerking", key: "name" },
         { text: "Registraties", key: "catalogue" },
         { text: "Applicatie", key: "application" },
-        { text: "Entiteiten", key: "entity" }
+        { text: "Entiteiten", key: "entity" },
+        { text: "Attributen", key: "attribute" }
       ],
       messageTypes: [
         { text: "Info", value: "infos" },
