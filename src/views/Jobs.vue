@@ -142,6 +142,7 @@ export default {
         catalogue: [],
         entity: [],
         application: [],
+        attribute: [],
         source: [],
         name: [],
         messageTypes: []
@@ -204,6 +205,7 @@ export default {
           match("name") &&
           match("status") &&
           match("ageCategory") &&
+          match("attribute") &&
           (this.filter.messageTypes.length === 0 ||
             this.filter.messageTypes.reduce((s, t) => s + job[t], 0) > 0)
         );

@@ -153,6 +153,21 @@ function isZombie(job) {
   return false;
 }
 
+function getJobAttribute(job) {
+  const processId = job.processId;
+  if (!processId) {
+    return "";
+  }
+  const parts = processId.split(".");
+  const length = parts.length;
+  if (length > 4) {
+    const attribute = parts[length - 1].replace(/_/g, " ");
+    return attribute === job.entity ? "" : attribute;
+  } else {
+    return "";
+  }
+}
+
 export async function getJobs(filter) {
   var data = await queryJobs(filter);
 
@@ -166,6 +181,7 @@ export async function getJobs(filter) {
           .tz("CET")
           .startOf("day")
       ),
+      attribute: getJobAttribute(job),
       ago: moment(Date.now()).diff(moment(job.starttime)),
       duration: moment.duration(moment(job.endtime).diff(moment(job.starttime)))
     }))
