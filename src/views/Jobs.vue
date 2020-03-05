@@ -56,6 +56,16 @@
             :job="allJobs[0]"
             :sort="sort"
           ></job-sorter>
+          <div class="mt-2">
+            <b-button class="float-right" @click="loadDays()">
+              <font-awesome-icon icon="search" />
+            </b-button>
+            <b-input
+              class="search-text"
+              v-model="search"
+              placeholder="Search log"
+            ></b-input>
+          </div>
           <div class="mt-3">
             <job-filter :filter="filter" :jobs="jobs"></job-filter>
           </div>
@@ -156,7 +166,9 @@ export default {
       activeCollapseId: null,
 
       loading: true,
-      new_logs: false
+      new_logs: false,
+
+      search: ""
     };
   },
   components: {
@@ -311,6 +323,9 @@ export default {
     async loadJobs() {
       // Load jobs from API, default is load last 10 days
       const filter = { daysAgo: 10 };
+      if (this.search) {
+        filter.search = `"${this.search}"`;
+      }
       this.allJobs = await getJobs(filter);
     },
 
@@ -384,5 +399,8 @@ export default {
 }
 .refresh-button {
   margin-bottom: 10px;
+}
+.search-text {
+  width: 75%;
 }
 </style>
