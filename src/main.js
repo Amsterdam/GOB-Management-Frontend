@@ -41,7 +41,11 @@ import {
   faExclamationTriangle,
   faCheck,
   faTrashAlt,
-  faExclamationCircle
+  faExclamationCircle,
+  faChevronDown,
+  faChevronUp,
+  faSortAmountDownAlt,
+  faSortAmountDown
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -114,7 +118,11 @@ library.add([
   faExclamationTriangle,
   faCheck,
   faTrashAlt,
-  faExclamationCircle
+  faExclamationCircle,
+  faChevronDown,
+  faChevronUp,
+  faSortAmountDownAlt,
+  faSortAmountDown
 ]);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
