@@ -138,15 +138,11 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col">
-              <div class="align-center mt-5">
-                <db-info></db-info>
-              </div>
-            </div>
-          </div>
         </div>
         <div class="col">
+          <div class="align-center">
+            <db-info></db-info>
+          </div>
           <service-detail :services="services"></service-detail>
         </div>
       </div>

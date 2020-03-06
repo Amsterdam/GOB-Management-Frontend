@@ -2,14 +2,28 @@
   <div v-if="queues">
     <h3>Queues</h3>
     <table align="center">
-      <tr align="left">
-        <th>Process</th>
-        <th></th>
-        <th colspan="2">Waiting</th>
-        <th colspan="2">Processing</th>
+      <tr class="font-weight-bold">
+        <td align="left" colspan="2">Process</td>
+        <td align="right" colspan="2">Waiting</td>
+        <td align="right" colspan="2">Processing</td>
+      </tr>
+      <tr align="right" class="font-weight-bold">
+        <td colspan="2"></td>
+        <td colspan="2">
+          {{ queues.reduce((a, b) => a + b.messages_ready, 0) }}
+        </td>
+        <td colspan="2">
+          {{ queues.reduce((a, b) => a + b.messages_unacknowledged, 0) }}
+        </td>
       </tr>
       <tr v-for="queue in queues" :key="queue.name">
-        <td align="left">{{ queue.display }}</td>
+        <td align="left" :title="Tooltips[queue.display] || 'Unused queue'">
+          {{ queue.display }}
+          <font-awesome-icon
+            icon="exclamation-circle"
+            v-if="!Tooltips[queue.display]"
+          ></font-awesome-icon>
+        </td>
         <td>
           <b-btn
             v-if="isAdmin() && queue.messages_ready > 0"
@@ -50,13 +64,44 @@
 import { getQueues, purgeQueue } from "../services/gob";
 import auth from "../services/auth";
 
+const Tooltips = {
+  prepare: "Prepare a remote datasource",
+  import: "Import data and convert it to GOB format",
+  compare: "Compare imported data with current data",
+  relate: "Derive relations and store result in the entities",
+  relate_table: "Derive relations and generate events",
+  fullupdate: "Store events",
+  apply: "Apply events",
+  relate_update_view: "Update materialized view on a relation",
+  check_relation: "Compare relation table with entity relations",
+  export: "Export data",
+  export_test: "Verify exported data",
+  workflow: "Start a workflow",
+  logs: "Regular log message",
+  heartbeat: "Report GOB module to be alive",
+  auditlogs: "Audit log message",
+  progress: "Progress of a job step in a workflow",
+  "prepare.task": "Execute a prepare subtask",
+  "prepare.complete": "Result of a prepare subtask",
+  "jobstep.result": "Result of a job step in a workflow",
+  airflow: "Airflow job control queue"
+};
+
+const order = Object.keys(Tooltips);
+
+function getOrder(queue) {
+  const result = order.indexOf(queue.display);
+  return result < 0 ? 999 : result;
+}
+
 export default {
   name: "Queues",
   data() {
     return {
       queues: null,
       interval: null,
-      MAX_READY: 4
+      MAX_READY: 4,
+      Tooltips
     };
   },
   methods: {
@@ -66,7 +111,9 @@ export default {
     std_queue(queue) {
       queue.display = queue.name
         .replace(".queue", "")
+        .replace("airflow.jobstep.result", "airflow")
         .replace("gob.workflow.", "")
+        .replace("gob.audit.", "audit")
         .replace("gob.status.", "")
         .replace("gob.log.", "")
         .replace("gob.", "");
@@ -76,15 +123,10 @@ export default {
       purgeQueue(queue);
     },
     async update() {
-      // .filter(q => q.messages_ready > 0)
       let queues = await getQueues();
       this.queues = queues
-        .filter(q => !q.name.includes(".task"))
-        .filter(q => !q.name.includes(".complete"))
-        .filter(q => !q.name.includes(".result"))
-        .filter(q => !q.name.includes("audit.logs"))
         .map(q => this.std_queue(q))
-        .sort((a, b) => (a.display < b.display ? -1 : 1));
+        .sort((a, b) => getOrder(a) - getOrder(b));
     }
   },
   async mounted() {
