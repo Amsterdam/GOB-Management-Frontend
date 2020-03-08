@@ -1,7 +1,14 @@
 <template>
   <div>
     <div class="text-left">
-      <b-btn block v-b-toggle="title" variant="primary" class="mb-2">
+      <b-btn
+        pill
+        block
+        v-b-toggle="title"
+        size="sm"
+        variant="outline-dark"
+        class="mb-2"
+      >
         {{ title }}
         <span class="when-closed float-right">
           <font-awesome-icon icon="chevron-down" />
@@ -11,7 +18,7 @@
         </span>
       </b-btn>
     </div>
-    <b-collapse :id="title" class="text-left">
+    <b-collapse :visible="visible" :id="title" class="text-left">
       <slot></slot>
     </b-collapse>
   </div>
@@ -21,7 +28,11 @@
 export default {
   name: "FilterItem",
   props: {
-    title: String
+    title: String,
+    visible: {
+      type: Boolean,
+      default: false
+    }
   }
 };
 </script>

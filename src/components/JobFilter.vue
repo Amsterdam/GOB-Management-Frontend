@@ -30,7 +30,7 @@
     <div class="text-left font-weight-bold">
       Filters
     </div>
-    <filter-item title="Type meldingen">
+    <filter-item title="Type meldingen" visible="true">
       <b-form-group>
         <b-form-checkbox-group
           stacked
@@ -45,7 +45,10 @@
       :key="filterType.key"
       v-if="filterOptions(filterType.key).length"
     >
-      <filter-item :title="filterType.text">
+      <filter-item
+        :title="filterType.text"
+        :visible="filterOptions(filterType.key).length <= 5"
+      >
         <b-form-group>
           <b-form-checkbox-group
             stacked
