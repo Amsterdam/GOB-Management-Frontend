@@ -1,0 +1,45 @@
+<template>
+  <div>
+    <div class="text-left">
+      <b-btn
+        pill
+        block
+        v-b-toggle="title"
+        size="sm"
+        variant="outline-dark"
+        class="mb-2"
+      >
+        {{ title }}
+        <span class="when-closed float-right">
+          <font-awesome-icon icon="chevron-down" />
+        </span>
+        <span class="when-opened float-right">
+          <font-awesome-icon icon="chevron-up" />
+        </span>
+      </b-btn>
+    </div>
+    <b-collapse :visible="visible" :id="title" class="text-left">
+      <slot></slot>
+    </b-collapse>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "FilterItem",
+  props: {
+    title: String,
+    visible: {
+      type: Boolean,
+      default: false
+    }
+  }
+};
+</script>
+
+<style scoped>
+.collapsed > .when-opened,
+:not(.collapsed) > .when-closed {
+  display: none;
+}
+</style>

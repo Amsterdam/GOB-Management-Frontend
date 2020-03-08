@@ -1,56 +1,73 @@
 <template>
   <div>
-    <b-form-group label="Shortcuts" class="text-left">
-      <div class="mb-1">
-        <b-btn block variant="primary" @click="filterOnFailed()"
-          >Jobs gefaald</b-btn
-        >
-      </div>
-      <div class="mb-1">
-        <b-btn block variant="primary" @click="filterOnErrors()"
-          >Jobs met fouten</b-btn
-        >
-      </div>
-      <div class="mb-1">
-        <b-btn block variant="primary" @click="filterOnWarnings()"
-          >Jobs met waarschuwingen</b-btn
-        >
-      </div>
-      <div>
-        <b-btn block variant="primary" @click="clearFilter()"
-          >Reset filters</b-btn
-        >
-      </div>
+    <div class="text-left font-weight-bold">
+      Shortcuts
+    </div>
+    <b-form-group class="text-left">
+      <b-form-group>
+        <div class="mb-1">
+          <b-btn block variant="primary" @click="filterOnFailed()"
+            >Jobs gefaald</b-btn
+          >
+        </div>
+        <div class="mb-1">
+          <b-btn block variant="primary" @click="filterOnErrors()"
+            >Jobs met fouten</b-btn
+          >
+        </div>
+        <div class="mb-1">
+          <b-btn block variant="primary" @click="filterOnWarnings()"
+            >Jobs met waarschuwingen</b-btn
+          >
+        </div>
+        <div>
+          <b-btn block variant="primary" @click="clearFilter()"
+            >Reset filters</b-btn
+          >
+        </div>
+      </b-form-group>
     </b-form-group>
-    <b-form-group label="Type meldingen" class="text-left">
-      <b-form-checkbox-group
-        stacked
-        v-model="filter.messageTypes"
-        name="flavour2a"
-        :options="messageTypes"
-      />
-    </b-form-group>
+    <div class="text-left font-weight-bold">
+      Filters
+    </div>
+    <filter-item title="Type meldingen" visible="true">
+      <b-form-group>
+        <b-form-checkbox-group
+          stacked
+          v-model="filter.messageTypes"
+          name="flavour2a"
+          :options="messageTypes"
+        />
+      </b-form-group>
+    </filter-item>
     <div
       v-for="filterType in filterTypes"
       :key="filterType.key"
       v-if="filterOptions(filterType.key).length"
     >
-      <b-form-group :label="filterType.text" class="text-left">
-        <b-form-checkbox-group
-          stacked
-          v-model="filter[filterType.key]"
-          name="flavour2a"
-          :options="filterOptions(filterType.key)"
-        />
-      </b-form-group>
+      <filter-item
+        :title="filterType.text"
+        :visible="filterOptions(filterType.key).length <= 5"
+      >
+        <b-form-group>
+          <b-form-checkbox-group
+            stacked
+            v-model="filter[filterType.key]"
+            name="flavour2a"
+            :options="filterOptions(filterType.key)"
+          />
+        </b-form-group>
+      </filter-item>
     </div>
   </div>
 </template>
 
 <script>
 import _ from "lodash";
+import FilterItem from "./FilterItem";
 
 export default {
+  components: { FilterItem },
   props: {
     filter: Object,
     jobs: Array
@@ -95,10 +112,10 @@ export default {
       filterTypes: [
         { text: "Status", key: "status" },
         { text: "Leeftijd", key: "ageCategory" },
-        { text: "Bron", key: "source" },
         { text: "Type verwerking", key: "name" },
-        { text: "Registraties", key: "catalogue" },
+        { text: "Bron", key: "source" },
         { text: "Applicatie", key: "application" },
+        { text: "Registraties", key: "catalogue" },
         { text: "Entiteiten", key: "entity" },
         { text: "Attributen", key: "attribute" }
       ],

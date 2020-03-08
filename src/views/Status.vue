@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Status</h1>
-    <div class="mt-5"><status-report size="large"></status-report></div>
+    <div class="mt-5 mb-5"><status-report size="large"></status-report></div>
   </div>
 </template>
 

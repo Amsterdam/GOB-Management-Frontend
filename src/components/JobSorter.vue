@@ -1,28 +1,48 @@
 <template>
   <div>
-    <b-button v-b-toggle.sortering block variant="primary">Sortering</b-button>
-    <b-collapse id="sortering" v-if="job">
-      <div class="mt-2">
-        <b-button size="sm" @click="sort.direction *= -1">
-          {{ sort.direction > 0 ? "Oplopend" : "Aflopend" }}
-        </b-button>
+    <filter-item title="Sortering">
+      <div v-if="job">
+        <div class="mt-2 text-center">
+          <b-btn
+            class="text-left"
+            pill
+            size="sm"
+            variant="secondary"
+            @click="sort.direction *= -1"
+          >
+            <span v-if="sort.direction > 0">
+              Oplopend
+              <font-awesome-icon
+                icon="sort-amount-down-alt"
+              ></font-awesome-icon>
+            </span>
+            <span v-else>
+              Aflopend
+              <font-awesome-icon icon="sort-amount-down"></font-awesome-icon>
+            </span>
+          </b-btn>
+        </div>
+        <b-form-group class="text-left mb-2">
+          <b-form-radio v-model="sort.field" name="nosort" value="null">
+            unsorted
+          </b-form-radio>
+          <b-form-radio-group
+            stacked
+            v-model="sort.field"
+            name="flavour2a"
+            :options="Object.keys(job)"
+          />
+        </b-form-group>
       </div>
-      <b-form-group class="text-left">
-        <b-form-radio-group
-          class="mt-2"
-          stacked
-          v-model="sort.field"
-          name="flavour2a"
-          :options="Object.keys(job)"
-        />
-      </b-form-group>
-    </b-collapse>
+    </filter-item>
   </div>
 </template>
 
 <script>
+import FilterItem from "./FilterItem";
 export default {
   name: "JobSorter",
+  components: { FilterItem },
   props: {
     job: Object,
     sort: Object

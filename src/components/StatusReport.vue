@@ -3,151 +3,152 @@
     <div v-if="size === 'large'">
       <div class="row">
         <div class="col">
-          <div class="row">
-            <table align="center">
-              <tr>
-                <td style="width:40%" colspan="2"></td>
-                <td style="width:40%" colspan="2" class="unitborder">
-                  <font-awesome-icon icon="database" />
-                </td>
-                <td style="width:20%"></td>
-              </tr>
-              <tr>
-                <td style="width:40%" colspan="2"></td>
-                <td style="width:20%">
-                  <font-awesome-icon icon="long-arrow-alt-up" />
-                </td>
-                <td style="width:20%">
-                  <font-awesome-icon icon="long-arrow-alt-down" />
-                </td>
-                <td style="width:20%"></td>
-              </tr>
-              <tr>
-                <td style="width:20%">
-                  <status-indicator
-                    name="Prepare"
-                    icon="filter"
-                    :service="services.Prepare"
-                  ></status-indicator>
-                </td>
-                <td style="width:20%">
-                  <status-indicator
-                    name="Import"
-                    icon="download"
-                    :service="services.Import"
-                  ></status-indicator>
-                </td>
-                <td style="width:20%">
-                  <status-indicator
-                    name="Workflow"
-                    icon="cogs"
-                    :service="services.Workflow"
-                  ></status-indicator>
-                </td>
-                <td style="width:20%">
-                  <status-indicator
-                    name="BeheerAPI"
-                    icon="plug"
-                    :service="services.BeheerAPI"
-                  ></status-indicator>
-                </td>
-                <td style="width:20%">
-                  <status-indicator
-                    name="IRIS"
-                    icon="tv"
-                    :service="services.IRIS"
-                  ></status-indicator>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="5" class="unitborder">
-                  <font-awesome-icon icon="envelope" />
-                </td>
-              </tr>
-              <tr>
-                <td style="width:20%">
-                  <status-indicator
-                    :reversed="true"
-                    name="Compare"
-                    icon="balance-scale"
-                    :service="services.Upload"
-                  ></status-indicator>
-                </td>
-                <td style="width:20%">
-                  <status-indicator
-                    :reversed="true"
-                    name="Relate"
-                    icon="link"
-                    :service="services.Upload"
-                  ></status-indicator>
-                </td>
-                <td style="width:20%">
-                  <status-indicator
-                    :reversed="true"
-                    :reversedIcon="true"
-                    name="Upload"
-                    icon="upload"
-                    :service="services.Upload"
-                  ></status-indicator>
-                </td>
-                <td style="width:20%">
-                  <status-indicator
-                    :reversed="true"
-                    :reversedIcon="true"
-                    name="API"
-                    icon="plug"
-                    :service="services.API"
-                  ></status-indicator>
-                </td>
-                <td style="width:20%">
-                  <status-indicator
-                    :reversed="true"
-                    name="Export"
-                    icon="file-export"
-                    :service="services.Export"
-                  ></status-indicator>
-                </td>
-              </tr>
-              <tr>
-                <td style="width:20%">
-                  <font-awesome-icon icon="long-arrow-alt-up" />
-                </td>
-                <td style="width:20%">
-                  <font-awesome-icon icon="long-arrow-alt-up" />
-                </td>
-                <td style="width:20%">
-                  <font-awesome-icon icon="arrows-alt-v" />
-                </td>
-                <td style="width:20%">
-                  <font-awesome-icon icon="long-arrow-alt-up" />
-                </td>
-                <td style="width:20%"></td>
-              </tr>
-              <tr>
-                <td style="width:80%" colspan="4" class="unitborder">
-                  <font-awesome-icon icon="database" />
-                </td>
-                <td style="width:20%"></td>
-              </tr>
-            </table>
-          </div>
-          <div class="row">
-            <div class="col">
-              <div class="align-center mt-5">
-                <queues></queues>
-              </div>
-            </div>
-          </div>
+          <!--Schema-->
+          <table align="center">
+            <tr>
+              <td style="width:40%" colspan="2"></td>
+              <td style="width:40%" colspan="2" class="unitborder">
+                <font-awesome-icon icon="database" />
+              </td>
+              <td style="width:20%"></td>
+            </tr>
+            <tr>
+              <td style="width:40%" colspan="2"></td>
+              <td style="width:20%">
+                <font-awesome-icon icon="long-arrow-alt-up" />
+              </td>
+              <td style="width:20%">
+                <font-awesome-icon icon="long-arrow-alt-down" />
+              </td>
+              <td style="width:20%"></td>
+            </tr>
+            <tr>
+              <td style="width:20%">
+                <status-indicator
+                  name="Prepare"
+                  icon="filter"
+                  :service="services.Prepare"
+                ></status-indicator>
+              </td>
+              <td style="width:20%">
+                <status-indicator
+                  name="Import"
+                  icon="download"
+                  :service="services.Import"
+                ></status-indicator>
+              </td>
+              <td style="width:20%">
+                <status-indicator
+                  name="Workflow"
+                  icon="cogs"
+                  :service="services.Workflow"
+                ></status-indicator>
+              </td>
+              <td style="width:20%">
+                <status-indicator
+                  name="BeheerAPI"
+                  icon="plug"
+                  :service="services.BeheerAPI"
+                ></status-indicator>
+              </td>
+              <td style="width:20%">
+                <status-indicator
+                  name="IRIS"
+                  icon="tv"
+                  :service="services.IRIS"
+                ></status-indicator>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="5" class="unitborder">
+                <font-awesome-icon icon="envelope" />
+              </td>
+            </tr>
+            <tr>
+              <td style="width:20%">
+                <status-indicator
+                  :reversed="true"
+                  name="Compare"
+                  icon="balance-scale"
+                  :service="services.Upload"
+                ></status-indicator>
+              </td>
+              <td style="width:20%">
+                <status-indicator
+                  :reversed="true"
+                  name="Relate"
+                  icon="link"
+                  :service="services.Upload"
+                ></status-indicator>
+              </td>
+              <td style="width:20%">
+                <status-indicator
+                  :reversed="true"
+                  :reversedIcon="true"
+                  name="Upload"
+                  icon="upload"
+                  :service="services.Upload"
+                ></status-indicator>
+              </td>
+              <td style="width:20%">
+                <status-indicator
+                  :reversed="true"
+                  :reversedIcon="true"
+                  name="API"
+                  icon="plug"
+                  :service="services.API"
+                ></status-indicator>
+              </td>
+              <td style="width:20%">
+                <status-indicator
+                  :reversed="true"
+                  name="Export"
+                  icon="file-export"
+                  :service="services.Export"
+                ></status-indicator>
+              </td>
+            </tr>
+            <tr>
+              <td style="width:20%">
+                <font-awesome-icon icon="long-arrow-alt-up" />
+              </td>
+              <td style="width:20%">
+                <font-awesome-icon icon="long-arrow-alt-up" />
+              </td>
+              <td style="width:20%">
+                <font-awesome-icon icon="arrows-alt-v" />
+              </td>
+              <td style="width:20%">
+                <font-awesome-icon icon="long-arrow-alt-up" />
+              </td>
+              <td style="width:20%"></td>
+            </tr>
+            <tr>
+              <td style="width:80%" colspan="4" class="unitborder">
+                <font-awesome-icon icon="database" />
+              </td>
+              <td style="width:20%"></td>
+            </tr>
+          </table>
         </div>
         <div class="col">
-          <div class="align-center">
-            <db-info></db-info>
-          </div>
+          <!--Database-->
+          <db-info></db-info>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col mt-5">
+          <!--Queues-->
+          <queues></queues>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col mt-5">
+          <!--Processes-->
           <service-detail :services="services"></service-detail>
         </div>
       </div>
     </div>
-
     <div v-else>
       <b-badge class="badge-pill" :variant="variant"> &nbsp; </b-badge>
     </div>

@@ -56,16 +56,18 @@
             :job="allJobs[0]"
             :sort="sort"
           ></job-sorter>
-          <div class="mt-2">
-            <b-button class="float-right" @click="loadDays()">
-              <font-awesome-icon icon="search" />
-            </b-button>
-            <b-input
-              class="search-text"
-              v-model="search"
-              placeholder="Search log"
-            ></b-input>
-          </div>
+          <filter-item title="Zoeken">
+            <div>
+              <b-button class="float-right" @click="loadDays()">
+                <font-awesome-icon icon="search" />
+              </b-button>
+              <b-input
+                class="search-text"
+                v-model="search"
+                placeholder="Zoek tekst"
+              ></b-input>
+            </div>
+          </filter-item>
           <div class="mt-3">
             <job-filter :filter="filter" :jobs="jobs"></job-filter>
           </div>
@@ -131,6 +133,7 @@ import { connect, disconnect, subscribe } from "../services/sockets";
 import { getJobs, logsForJob, jobRunsOnDate } from "../services/gob";
 import FilterOverview from "../components/FilterOverview";
 import JobSorter from "../components/JobSorter";
+import FilterItem from "../components/FilterItem";
 
 export default {
   name: "entities",
@@ -172,6 +175,7 @@ export default {
     };
   },
   components: {
+    FilterItem,
     JobSorter,
     FilterOverview,
     JobCalendar,

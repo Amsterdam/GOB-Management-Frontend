@@ -1,40 +1,51 @@
 <template>
   <div>
     <div>
-      <h4>Processes</h4>
-      <div
-        v-for="service in services"
-        :key="service.serviceId"
-        v-if="service.instances"
-        class="mb-2"
-      >
-        <div
-          v-for="(instance, i) in service.instances.filter(
-            i => i.tasks.length > 0
-          )"
-          :key="instance.serviceId"
-          class="mb-2"
-        >
-          <div>
-            {{ instance.name }}
-            <span v-if="service.instances.length > 1">({{ i + 1 }})</span>
-            <font-awesome-icon
-              v-if="isRunning(instance)"
-              icon="cog"
-              class="fa-spin"
-            />
-          </div>
+      <h4>Services</h4>
+      <b-container>
+        <b-row class="justify-content-center">
           <div
-            v-for="task in tasks(instance)"
-            :key="task.name"
-            class="small"
-            :class="task.isAlive ? 'INFO' : 'ERROR'"
+            v-for="service in services"
+            :key="service.serviceId"
+            v-if="service.instances"
           >
-            {{ taskname(task) }}
-            <span v-if="task.count > 1">({{ task.count }})</span>
+            <!--Service, e.g. Workflow-->
+            <div
+              v-for="(instance, i) in service.instances.filter(
+                i => i.tasks.length > 0
+              )"
+              :key="instance.serviceId"
+            >
+              <b-col class="mb-2">
+                <div class="pl-1 pr-1 border">
+                  <!--Service Instance, e.g. Workflow(3)-->
+                  <div>
+                    {{ instance.name }}
+                    <span v-if="service.instances.length > 1"
+                      >({{ i + 1 }})</span
+                    >
+                    <font-awesome-icon
+                      v-if="isRunning(instance)"
+                      icon="cog"
+                      class="fa-spin"
+                    />
+                  </div>
+                  <!--Service task, e.g. Queue handler-->
+                  <div
+                    v-for="task in tasks(instance)"
+                    :key="task.name"
+                    class="small"
+                    :class="task.isAlive ? 'INFO' : 'ERROR'"
+                  >
+                    {{ taskname(task) }}
+                    <span v-if="task.count > 1">({{ task.count }})</span>
+                  </div>
+                </div>
+              </b-col>
+            </div>
           </div>
-        </div>
-      </div>
+        </b-row>
+      </b-container>
     </div>
   </div>
 </template>
