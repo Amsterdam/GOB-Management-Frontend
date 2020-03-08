@@ -1,6 +1,6 @@
 <template>
   <div class="mb-5" v-if="locks || queries">
-    <h3>DB Info</h3>
+    <h3>Database</h3>
     <div>
       <div v-if="locks">
         <h4>Locks: {{ locks.length }}</h4>

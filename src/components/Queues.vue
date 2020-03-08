@@ -1,28 +1,29 @@
 <template>
   <div v-if="queues">
-    <h3>Queues</h3>
+    <h3>Processes</h3>
     <table align="center">
       <tr class="font-weight-bold">
         <td align="left" colspan="2">Process</td>
         <td align="right" colspan="2">Waiting</td>
         <td align="right" colspan="2">Processing</td>
       </tr>
-      <tr align="right" class="font-weight-bold">
-        <td colspan="2"></td>
-        <td colspan="2">
+      <tr class="font-weight-bold">
+        <td colspan="2" align="left"><span>&Sigma;</span></td>
+        <td colspan="2" align="right">
           {{ queues.reduce((a, b) => a + b.messages_ready, 0) }}
         </td>
-        <td colspan="2">
+        <td colspan="2" align="right">
           {{ queues.reduce((a, b) => a + b.messages_unacknowledged, 0) }}
         </td>
       </tr>
       <tr v-for="queue in queues" :key="queue.name">
-        <td align="left" :title="Tooltips[queue.display] || 'Unused queue'">
-          {{ queue.display }}
+        <td align="left" :title="queue.display">
           <font-awesome-icon
             icon="exclamation-circle"
+            title="unused queue"
             v-if="!Tooltips[queue.display]"
           ></font-awesome-icon>
+          {{ Tooltips[queue.display] || queue.display }}
         </td>
         <td>
           <b-btn
@@ -66,7 +67,8 @@ import auth from "../services/auth";
 
 const Tooltips = {
   prepare: "Prepare a remote datasource",
-  import: "Import data and convert it to GOB format",
+  "prepare.task": "Execute a prepare subtask",
+  import: "Import data and convert to GOB format",
   compare: "Compare imported data with current data",
   relate: "Derive relations and store result in the entities",
   relate_table: "Derive relations and generate events",
@@ -81,7 +83,6 @@ const Tooltips = {
   heartbeat: "Report GOB module to be alive",
   auditlogs: "Audit log message",
   progress: "Progress of a job step in a workflow",
-  "prepare.task": "Execute a prepare subtask",
   "prepare.complete": "Result of a prepare subtask",
   "jobstep.result": "Result of a job step in a workflow",
   airflow: "Airflow job control queue"
@@ -146,5 +147,8 @@ export default {
 <style scoped>
 td {
   padding-right: 25px;
+}
+tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
 </style>

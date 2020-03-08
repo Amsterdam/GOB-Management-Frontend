@@ -1,11 +1,11 @@
 <template>
   <div>
-    <filter-item title="sortering">
+    <filter-item title="Sortering">
       <div v-if="job">
-        <div class="mt-2">
+        <div class="mt-2 text-center">
           <b-btn
             class="text-left"
-            block
+            pill
             size="sm"
             variant="secondary"
             @click="sort.direction *= -1"
