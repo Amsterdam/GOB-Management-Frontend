@@ -56,17 +56,21 @@
             :job="allJobs[0]"
             :sort="sort"
           ></job-sorter>
-          <filter-item title="Zoeken">
-            <div>
-              <b-button class="float-right" @click="loadDays()">
-                <font-awesome-icon icon="search" />
-              </b-button>
-              <b-input
-                class="search-text"
-                v-model="search"
-                placeholder="Zoek tekst"
-              ></b-input>
-            </div>
+          <filter-item title="Zoeken" :when-closed="searchText">
+            <b-row>
+              <b-col cols="9">
+                <b-form-input
+                  v-model="search"
+                  placeholder="Zoek tekst"
+                  @keydown.enter.native="loadDays"
+                ></b-form-input>
+              </b-col>
+              <b-col cols="3">
+                <b-button @click="loadDays()">
+                  <font-awesome-icon icon="search" />
+                </b-button>
+              </b-col>
+            </b-row>
           </filter-item>
           <div class="mt-3">
             <job-filter :filter="filter" :jobs="jobs"></job-filter>
@@ -172,7 +176,8 @@ export default {
       loading: true,
       new_logs: false,
 
-      search: ""
+      search: "",
+      searchText: null
     };
   },
   components: {
@@ -200,10 +205,12 @@ export default {
             ? this.sort.direction
             : -this.sort.direction
         );
+      } else {
+        this.setFilteredJobs();
       }
     },
 
-    applyFilter() {
+    setFilteredJobs() {
       this.filteredJobs = this.jobs.filter(job => {
         // default filter is on current year month
         const year = this.filter.year[0] || new Date().getFullYear();
@@ -228,6 +235,10 @@ export default {
             this.filter.messageTypes.reduce((s, t) => s + job[t], 0) > 0)
         );
       });
+    },
+
+    applyFilter() {
+      this.setFilteredJobs();
       this.sortJobs();
     },
 
@@ -331,6 +342,9 @@ export default {
       const filter = { daysAgo: 10 };
       if (this.search) {
         filter.search = `"${this.search}"`;
+        this.searchText = this.search;
+      } else {
+        this.searchText = null;
       }
       this.allJobs = await getJobs(filter);
     },

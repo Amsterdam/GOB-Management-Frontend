@@ -1,8 +1,8 @@
 <template>
   <div>
-    <filter-item title="Sortering">
+    <filter-item title="Sortering" :when-closed="sort.field">
       <div v-if="job">
-        <div class="mt-2 text-center">
+        <div class="text-center">
           <b-btn
             class="text-left"
             pill
@@ -23,7 +23,7 @@
           </b-btn>
         </div>
         <b-form-group class="text-left mb-2">
-          <b-form-radio v-model="sort.field" name="nosort" value="null">
+          <b-form-radio v-model="sort.field" name="nosort" value="">
             unsorted
           </b-form-radio>
           <b-form-radio-group
