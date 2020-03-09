@@ -169,26 +169,33 @@ function getJobAttribute(job) {
 }
 
 export async function getJobs(filter) {
-  var data = await queryJobs(filter);
+  let data = await queryJobs(filter);
 
-  // Interpret any UTC date time that is received from the backend in the CET timezone
-  var jobs = data.jobs
-    .filter(job => job.processId)
-    .map(job => ({
-      ...job,
-      date: new Date(
-        moment(job.day)
-          .tz("CET")
-          .startOf("day")
-      ),
-      attribute: getJobAttribute(job),
-      ago: moment(Date.now()).diff(moment(job.starttime)),
-      duration: moment.duration(moment(job.endtime).diff(moment(job.starttime)))
-    }))
-    .map(job => ({
-      ...job,
-      status: job.status === "started" && isZombie(job) ? "zombie" : job.status
-    }));
+  let jobs = data.jobs.filter(job => job.processId);
+  let jobIds = {};
+
+  jobs.forEach(job => {
+    // Interpret any UTC date time that is received from the backend in the CET timezone
+    job.date = new Date(
+      moment(job.day)
+        .tz("CET")
+        .startOf("day")
+    );
+    job.ago = moment(Date.now()).diff(moment(job.starttime));
+    job.duration = moment.duration(
+      moment(job.endtime).diff(moment(job.starttime))
+    );
+    job.status =
+      job.status === "started" && isZombie(job) ? "zombie" : job.status;
+    job.attribute = getJobAttribute(job);
+    const jobId = `${job.name}.${job.source}.${job.application}.${job.entity}.${job.attribute}`;
+    if (jobIds[jobId]) {
+      job.execution = "voorgaande";
+    } else {
+      job.execution = "recentste";
+      jobIds[jobId] = true;
+    }
+  });
   return jobs;
 }
 
