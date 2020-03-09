@@ -10,6 +10,7 @@
         class="mb-2"
       >
         {{ title }}
+        <span v-if="whenClosed" class="when-closed">({{ whenClosed }})</span>
         <span class="when-closed float-right">
           <font-awesome-icon icon="chevron-down" />
         </span>
@@ -29,6 +30,7 @@ export default {
   name: "FilterItem",
   props: {
     title: String,
+    whenClosed: String,
     visible: {
       type: Boolean,
       default: false
