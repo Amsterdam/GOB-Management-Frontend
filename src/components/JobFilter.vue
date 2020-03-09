@@ -30,7 +30,7 @@
     <div class="text-left font-weight-bold">
       Filters
     </div>
-    <filter-item title="Type meldingen" visible="true">
+    <filter-item title="Type meldingen" :visible="true">
       <b-form-group>
         <b-form-checkbox-group
           stacked
@@ -113,6 +113,7 @@ export default {
         { text: "Status", key: "status" },
         { text: "Leeftijd", key: "ageCategory" },
         { text: "Type verwerking", key: "name" },
+        { text: "Verwerking", key: "execution" },
         { text: "Bron", key: "source" },
         { text: "Applicatie", key: "application" },
         { text: "Registraties", key: "catalogue" },
