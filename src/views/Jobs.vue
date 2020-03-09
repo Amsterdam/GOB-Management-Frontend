@@ -158,7 +158,8 @@ export default {
         attribute: [],
         source: [],
         name: [],
-        messageTypes: []
+        messageTypes: [],
+        execution: []
       },
       sort: {
         field: null,
@@ -222,6 +223,7 @@ export default {
           match("status") &&
           match("ageCategory") &&
           match("attribute") &&
+          match("execution") &&
           (this.filter.messageTypes.length === 0 ||
             this.filter.messageTypes.reduce((s, t) => s + job[t], 0) > 0)
         );
