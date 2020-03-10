@@ -17,7 +17,7 @@
         </td>
       </tr>
       <tr v-for="queue in queues" :key="queue.name">
-        <td align="left" :title="queue.display">
+        <td align="left" :title="queue.name">
           <font-awesome-icon
             icon="exclamation-circle"
             title="unused queue"
@@ -85,7 +85,9 @@ const Tooltips = {
   progress: "Progress of a job step in a workflow",
   "prepare.complete": "Result of a prepare subtask",
   "jobstep.result": "Result of a job step in a workflow",
-  airflow: "Airflow job control queue"
+  airflow: "Airflow job control queue",
+  task: "Sub-Task request",
+  "task.result": "Sub-Task result"
 };
 
 const order = Object.keys(Tooltips);
