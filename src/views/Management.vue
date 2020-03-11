@@ -22,11 +22,11 @@
               :id="catalog + 'collections'"
               :disabled="collectionDisabled[catalog]"
             >
-              <b-form-radio-group
+              <b-form-checkbox-group
                 v-model="collection[catalog]"
                 :options="collections"
               >
-              </b-form-radio-group>
+              </b-form-checkbox-group>
             </b-form-group>
 
             <b-form-group label="Actions" :id="catalog + 'actions'">
@@ -65,7 +65,7 @@ export default {
       collection: {},
       collectionDisabled: {},
       catalogCollections: {},
-      actions: ["Import", "Relate", "Export", "Export Test"]
+      actions: ["Import", "Relate", "Export", "Dump", "Export Test"]
     };
   },
   async mounted() {
@@ -77,7 +77,7 @@ export default {
         catalog === "brk" ? ["Prepare", ...this.actions] : this.actions;
       return actions.map(action => ({
         value: action,
-        text: action === "Prepare" ? `${action} (Includes import)` : action
+        text: action
       }));
     },
     onAction(catalog, action) {

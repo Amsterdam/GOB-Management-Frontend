@@ -6,14 +6,22 @@
       v-model="product"
       placeholder="Optionally enter the name of the export file"
     ></b-form-input>
+    <b-form-input
+      class="mb-2"
+      v-if="action === 'Relate'"
+      v-model="product"
+      placeholder="Optionally enter the name of an attribute"
+    ></b-form-input>
     <b-button :disabled="!canStart()" @click="start()"
       ><font-awesome-icon icon="play" class="error" />
       {{ title }}
       {{ action }}
       {{ product }}</b-button
     >
-    <div class="mt-2" v-if="result" :class="result.ok ? 'INFO' : 'ERROR'">
-      {{ result.text }}
+    <div v-for="result in results" :key="result.text">
+      <div class="mt-2" v-if="result" :class="result.ok ? 'INFO' : 'ERROR'">
+        {{ result.text }}
+      </div>
     </div>
   </div>
 </template>
@@ -32,11 +40,11 @@ export default {
     title: String,
     action: String,
     catalog: String,
-    collection: String
+    collection: Array
   },
   data() {
     return {
-      result: null,
+      results: [],
       product: null
     };
   },
@@ -44,14 +52,15 @@ export default {
     canStart() {
       const action = this.action && this.action.toLowerCase();
       return (
-        !this.result &&
+        !this.results.length &&
+        action &&
         (catalogOnlyJobs.includes(action) ||
           collectionOptionalJobs.includes(action) ||
-          (this.catalog && this.collection))
+          (this.catalog && this.collection && this.collection.length))
       );
     },
     async start() {
-      this.result = null;
+      this.results = [];
 
       let user = "onbekende gebruiker";
       const userInfo = await auth.userInfo();
@@ -60,22 +69,28 @@ export default {
       }
       user = `${user} (Iris)`;
 
-      this.result = await createJob(
-        this.action,
-        this.catalog,
-        this.collection,
-        this.product,
-        user
-      );
-      if (this.result.ok) {
-        const info = JSON.parse(this.result.text);
-        const values = Object.values(info).join(" ");
-        this.result.text = `${this.action} ${values} started`;
+      for (let collection of this.collection || [null]) {
+        let result = await createJob(
+          this.action,
+          this.catalog,
+          collection,
+          this.product,
+          user
+        );
+
+        if (result.ok) {
+          const info = JSON.parse(result.text);
+          const values = Object.values(info).join(" ");
+          result.text = `${this.action} ${values} started`;
+        } else {
+          result.text = `${this.action} ${this.catalog} {collection} failed`;
+        }
+        this.results.push(result);
+        this.$forceUpdate();
       }
-      this.$forceUpdate();
     },
     clearResult() {
-      this.result = null;
+      this.results = [];
       this.product = null;
     }
   },
