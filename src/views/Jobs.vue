@@ -202,8 +202,8 @@ export default {
       this.$router.push({
         query: {
           ...this.$route.query,
-          sortField: this.sort.field,
-          sortOrder: this.sort.direction
+          sortField: this.sort.field || undefined,
+          sortOrder: this.sort.direction === 1 ? undefined : -1
         }
       });
       if (this.sort.field) {
@@ -354,7 +354,7 @@ export default {
         this.searchText = null;
       }
       this.$router.push({
-        query: { ...this.$route.query, search: this.search }
+        query: { ...this.$route.query, search: this.search || undefined }
       });
       this.allJobs = await getJobs(filter);
     },
