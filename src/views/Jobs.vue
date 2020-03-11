@@ -199,6 +199,13 @@ export default {
     },
 
     sortJobs() {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          sortField: this.sort.field,
+          sortOrder: this.sort.direction
+        }
+      });
       if (this.sort.field) {
         this.filteredJobs.sort((a, b) =>
           a[this.sort.field] > b[this.sort.field]
@@ -346,6 +353,9 @@ export default {
       } else {
         this.searchText = null;
       }
+      this.$router.push({
+        query: { ...this.$route.query, search: this.search }
+      });
       this.allJobs = await getJobs(filter);
     },
 
@@ -376,6 +386,13 @@ export default {
   },
 
   async mounted() {
+    // Load state from url
+    this.sort = {
+      field: this.$route.query.sortField || null,
+      direction: this.$route.query.sortOrder || 1
+    };
+    this.search = this.$route.query.search || "";
+
     this.loadDays();
 
     // Watch any new logs
