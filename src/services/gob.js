@@ -115,7 +115,12 @@ export async function createJob(action, catalogue, collection, product, user) {
     stadsdelen: "DGDialog"
   };
 
+  let destination = "Objectstore";
   action = action.toLowerCase().replace(" ", "_");
+  if (action === "dump") {
+    action = "export";
+    destination = "Database";
+  }
   catalogue = catalogue.toLowerCase();
   collection = collection ? collection.toLowerCase() : null;
   product = product || null;
@@ -131,7 +136,7 @@ export async function createJob(action, catalogue, collection, product, user) {
       catalogue,
       collection,
       application: application[collection],
-      destination: "Objectstore",
+      destination,
       product,
       user
     })

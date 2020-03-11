@@ -65,7 +65,7 @@ export default {
       collection: {},
       collectionDisabled: {},
       catalogCollections: {},
-      actions: ["Import", "Relate", "Export", "Export Test"]
+      actions: ["Import", "Relate", "Export", "Dump", "Export Test"]
     };
   },
   async mounted() {
