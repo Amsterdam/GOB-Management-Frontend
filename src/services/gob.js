@@ -138,6 +138,7 @@ export async function createJob(action, catalogue, collection, product, user) {
       application: application[collection],
       destination,
       product,
+      attribute: product,
       user
     })
   };

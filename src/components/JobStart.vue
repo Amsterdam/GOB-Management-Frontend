@@ -6,6 +6,12 @@
       v-model="product"
       placeholder="Optionally enter the name of the export file"
     ></b-form-input>
+    <b-form-input
+      class="mb-2"
+      v-if="action === 'Relate'"
+      v-model="product"
+      placeholder="Optionally enter the name of an attribute"
+    ></b-form-input>
     <b-button :disabled="!canStart()" @click="start()"
       ><font-awesome-icon icon="play" class="error" />
       {{ title }}
@@ -48,10 +54,9 @@ export default {
       return (
         !this.results.length &&
         action &&
-        this.collection && this.collection.length &&
         (catalogOnlyJobs.includes(action) ||
           collectionOptionalJobs.includes(action) ||
-          (this.catalog && this.collection))
+          (this.catalog && this.collection && this.collection.length))
       );
     },
     async start() {
@@ -64,7 +69,7 @@ export default {
       }
       user = `${user} (Iris)`;
 
-      for (let collection of this.collection) {
+      for (let collection of this.collection || [null]) {
         let result = await createJob(
           this.action,
           this.catalog,
