@@ -150,7 +150,13 @@
       </div>
     </div>
     <div v-else>
-      <b-badge class="badge-pill" :variant="variant"> &nbsp; </b-badge>
+      <b-badge class="badge-pill" :variant="variant">
+        <span v-if="activity">
+          {{ activity }}
+          <font-awesome-icon v-if="activity" icon="cog" class="fa-spin" />
+        </span>
+        <span v-else> &nbsp; </span>
+      </b-badge>
     </div>
   </div>
 </template>
@@ -161,6 +167,7 @@ import StatusIndicator from "./StatusIndicator";
 import ServiceDetail from "./ServiceDetail";
 import Queues from "./Queues";
 import DbInfo from "./DbInfo";
+import { getQueues } from "../services/gob";
 
 const REFRESH_INTERVAL = 5000;
 
@@ -173,6 +180,7 @@ export default {
   data() {
     return {
       services: {},
+      activity: null,
       timeout: null
     };
   },
@@ -190,6 +198,11 @@ export default {
   methods: {
     async monitorServices() {
       this.services = await services();
+      let queues = await getQueues();
+      this.activity = queues.reduce(
+        (s, q) => s + q.messages_unacknowledged + q.messages_ready,
+        0
+      );
       this.timeout = window.setTimeout(this.monitorServices, REFRESH_INTERVAL);
     }
   },
