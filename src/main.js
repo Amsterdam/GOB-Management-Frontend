@@ -11,6 +11,8 @@ import BootstrapVue from "bootstrap-vue";
 import VCalendar from "v-calendar";
 import "v-calendar/lib/v-calendar.min.css";
 
+import VueGoogleCharts from "vue-google-charts";
+
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faSync,
@@ -54,6 +56,8 @@ Vue.config.productionTip = false;
 Vue.use(VueLodash);
 
 Vue.use(BootstrapVue);
+
+Vue.use(VueGoogleCharts);
 
 Vue.use(VCalendar, {
   firstDayOfWeek: 2, // Monday
