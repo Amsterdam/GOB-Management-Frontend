@@ -9,6 +9,7 @@ import Status from "./views/Status";
 import Job from "./views/Job";
 import Management from "./views/Management";
 import JobExceptions from "./views/JobExceptions";
+import Dashboard from "./views/Dashboard";
 
 Vue.use(Router);
 
@@ -40,6 +41,11 @@ export default new Router({
       path: "/exceptions",
       name: "exceptions",
       component: JobExceptions
+    },
+    {
+      path: "/dashboard",
+      name: "dashboard",
+      component: Dashboard
     },
     {
       path: "/jobs",
