@@ -108,7 +108,7 @@ export default {
         },
         timeline: {
           legend: "none",
-          showRowLabels: false,
+          showRowLabels: false
         },
         hAxis: {
           format: "HH:mm"
