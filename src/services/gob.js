@@ -174,6 +174,21 @@ function getJobAttribute(job) {
   }
 }
 
+function getDurationSecs(duration, starttime, endtime) {
+  if (duration) {
+    const parts = duration.split(":");
+    if (parts.length === 3) {
+      return parts.reduce((sum, part) => sum * 60 + Number.parseInt(part), 0);
+    } else {
+      return Math.round(
+        Math.abs(new Date(endtime) - new Date(starttime)) / 1000
+      );
+    }
+  } else {
+    return 300;
+  }
+}
+
 export async function getJobs(filter) {
   let data = await queryJobs(filter);
 
@@ -194,6 +209,16 @@ export async function getJobs(filter) {
     job.status =
       job.status === "started" && isZombie(job) ? "zombie" : job.status;
     job.attribute = getJobAttribute(job);
+    job.brutoSecs = getDurationSecs(
+      job.brutoDuration,
+      job.starttime,
+      job.endtime
+    );
+    job.nettoSecs = getDurationSecs(
+      job.nettoDuration,
+      job.starttime,
+      job.endtime
+    );
     const jobId = `${job.name}.${job.source}.${job.application}.${job.entity}.${job.attribute}`;
     if (jobIds[jobId]) {
       job.execution = "voorgaande";
