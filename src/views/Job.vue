@@ -36,7 +36,7 @@
             title="Herstart"
             :action="job.name"
             :catalog="job.catalogue"
-            :collection="job.entity"
+            :collection="[job.entity]"
           ></job-start>
         </div>
 
