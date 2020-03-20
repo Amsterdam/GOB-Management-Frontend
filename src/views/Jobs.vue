@@ -80,43 +80,45 @@
 
       <div class="col col-lg-9">
         <div v-if="filteredJobs.length">
-          <div v-for="job in filteredJobs" :key="job.jobid" class="mb-2">
-            <div v-if="job.jobid">
-              <b-btn
-                v-b-toggle="job.jobid.toString()"
-                @click="loadLogs(job)"
-                block
-                variant="outline-secondary"
-              >
-                <job-header :job="job"></job-header>
-              </b-btn>
+          <infinite-loading>
+            <div v-for="job in filteredJobs" :key="job.jobid" class="mb-2">
+              <div v-if="job.jobid">
+                <b-btn
+                  v-b-toggle="job.jobid.toString()"
+                  @click="loadLogs(job)"
+                  block
+                  variant="outline-secondary"
+                >
+                  <job-header :job="job"></job-header>
+                </b-btn>
 
-              <b-collapse
-                :id="job.jobid.toString()"
-                accordion="job-accordion"
-                class="mt-2"
-              >
-                <div v-if="!job.logs">
-                  Laden van logs
-                  <font-awesome-icon icon="sync" class="fa-xs fa-spin" />
-                </div>
-                <div v-if="job.logs">
-                  <div class="text-right">
-                    <b-button
-                      size="sm"
-                      class="mb-1"
-                      target="_blank"
-                      :to="`/job?id=${job.jobid}`"
-                      >Details</b-button
-                    >
+                <b-collapse
+                  :id="job.jobid.toString()"
+                  accordion="job-accordion"
+                  class="mt-2"
+                >
+                  <div v-if="!job.logs">
+                    Laden van logs
+                    <font-awesome-icon icon="sync" class="fa-xs fa-spin" />
                   </div>
-                  <b-card v-if="job.logs">
-                    <logs :logs="job.logs" :job="job"></logs>
-                  </b-card>
-                </div>
-              </b-collapse>
+                  <div v-if="job.logs">
+                    <div class="text-right">
+                      <b-button
+                        size="sm"
+                        class="mb-1"
+                        target="_blank"
+                        :to="`/job?id=${job.jobid}`"
+                        >Details</b-button
+                      >
+                    </div>
+                    <b-card v-if="job.logs">
+                      <logs :logs="job.logs" :job="job"></logs>
+                    </b-card>
+                  </div>
+                </b-collapse>
+              </div>
             </div>
-          </div>
+          </infinite-loading>
         </div>
         <div v-else-if="!loading">
           <h3>Geen resultaten gevonden</h3>
