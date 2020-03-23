@@ -8,7 +8,7 @@
     </div>
     <div v-if="!loading" class="float-right">
       <span v-if="date">{{ date | formatdate("dddd, DD MMMM YYYY") }}, </span>
-      ({{ filteredJobs.length }})
+      ({{ allFilteredJobs.length }})
     </div>
     <h1>
       Jobs
@@ -79,45 +79,50 @@
       </b-collapse>
 
       <div class="col col-lg-9">
-        <div v-if="filteredJobs.length">
-          <infinite-loading>
-            <div v-for="job in filteredJobs" :key="job.jobid" class="mb-2">
-              <div v-if="job.jobid">
-                <b-btn
-                  v-b-toggle="job.jobid.toString()"
-                  @click="loadLogs(job)"
-                  block
-                  variant="outline-secondary"
-                >
-                  <job-header :job="job"></job-header>
-                </b-btn>
+        <div v-if="allFilteredJobs.length">
+          <div v-for="job in filteredJobs" :key="job.jobid" class="mb-2">
+            <div v-if="job.jobid">
+              <b-btn
+                v-b-toggle="job.jobid.toString()"
+                @click="loadLogs(job)"
+                block
+                variant="outline-secondary"
+              >
+                <job-header :job="job"></job-header>
+              </b-btn>
 
-                <b-collapse
-                  :id="job.jobid.toString()"
-                  accordion="job-accordion"
-                  class="mt-2"
-                >
-                  <div v-if="!job.logs">
-                    Laden van logs
-                    <font-awesome-icon icon="sync" class="fa-xs fa-spin" />
+              <b-collapse
+                :id="job.jobid.toString()"
+                accordion="job-accordion"
+                class="mt-2"
+              >
+                <div v-if="!job.logs">
+                  Laden van logs
+                  <font-awesome-icon icon="sync" class="fa-xs fa-spin" />
+                </div>
+                <div v-if="job.logs">
+                  <div class="text-right">
+                    <b-button
+                      size="sm"
+                      class="mb-1"
+                      target="_blank"
+                      :to="`/job?id=${job.jobid}`"
+                      >Details</b-button
+                    >
                   </div>
-                  <div v-if="job.logs">
-                    <div class="text-right">
-                      <b-button
-                        size="sm"
-                        class="mb-1"
-                        target="_blank"
-                        :to="`/job?id=${job.jobid}`"
-                        >Details</b-button
-                      >
-                    </div>
-                    <b-card v-if="job.logs">
-                      <logs :logs="job.logs" :job="job"></logs>
-                    </b-card>
-                  </div>
-                </b-collapse>
-              </div>
+                  <b-card v-if="job.logs">
+                    <logs :logs="job.logs" :job="job"></logs>
+                  </b-card>
+                </div>
+              </b-collapse>
             </div>
+          </div>
+          <infinite-loading
+            @infinite="infiniteHandler"
+            :identifier="infiniteId"
+          >
+            <div slot="spinner">Loading...</div>
+            <div slot="no-more"></div>
           </infinite-loading>
         </div>
         <div v-else-if="!loading">
@@ -130,6 +135,7 @@
 </template>
 
 <script>
+import InfiniteLoading from "vue-infinite-loading";
 import JobCalendar from "../components/JobCalendar";
 import JobHeader from "../components/JobHeader";
 import JobFilter from "../components/JobFilter";
@@ -152,6 +158,7 @@ export default {
       allJobs: [],
       jobs: [],
       filteredJobs: [],
+      allFilteredJobs: [],
       filter: {
         year: [],
         month: [],
@@ -171,6 +178,7 @@ export default {
         field: null,
         direction: 1
       },
+      isSorted: true,
 
       date: null,
       activeCollapseId: null,
@@ -179,10 +187,13 @@ export default {
       new_logs: false,
 
       search: "",
-      searchText: null
+      searchText: null,
+
+      infiniteId: 0
     };
   },
   components: {
+    InfiniteLoading,
     FilterItem,
     JobSorter,
     FilterOverview,
@@ -193,6 +204,25 @@ export default {
   },
   computed: {},
   methods: {
+    async infiniteHandler($state) {
+      if (this.filteredJobs.length < this.allFilteredJobs.length) {
+        this.filteredJobs.push(
+          ...this.allFilteredJobs.slice(
+            this.filteredJobs.length,
+            this.filteredJobs.length + 20
+          )
+        );
+        $state.loaded();
+      } else {
+        $state.complete();
+      }
+    },
+
+    resetInfiniteHandler() {
+      this.filteredJobs = [];
+      this.infiniteId += 1;
+    },
+
     matchFilter(job, key) {
       const jobKey = j => (j[key] || "").toLowerCase().replace(/_/g, " ");
       return (
@@ -201,26 +231,21 @@ export default {
     },
 
     sortJobs() {
-      this.$router.push({
-        query: {
-          ...this.$route.query,
-          sortField: this.sort.field || undefined,
-          sortOrder: this.sort.direction === 1 ? undefined : -1
-        }
-      });
       if (this.sort.field) {
-        this.filteredJobs.sort((a, b) =>
+        this.allFilteredJobs.sort((a, b) =>
           a[this.sort.field] > b[this.sort.field]
             ? this.sort.direction
             : -this.sort.direction
         );
-      } else {
+        this.isSorted = true;
+      } else if (this.isSorted) {
+        // Clear sorting
         this.setFilteredJobs();
       }
     },
 
     setFilteredJobs() {
-      this.filteredJobs = this.jobs.filter(job => {
+      this.allFilteredJobs = this.jobs.filter(job => {
         // default filter is on current year month
         const year = this.filter.year[0] || new Date().getFullYear();
         const month = this.filter.month[0] || new Date().getMonth() + 1;
@@ -244,6 +269,7 @@ export default {
             this.filter.messageTypes.reduce((s, t) => s + job[t], 0) > 0)
         );
       });
+      this.isSorted = false;
     },
 
     applyFilter() {
@@ -274,7 +300,6 @@ export default {
       }
 
       this.filterJobs(this.getDate());
-      this.applyFilter();
 
       this.loading = false;
     },
@@ -288,6 +313,20 @@ export default {
         });
       }
       this.applyFilter();
+      this.resetInfiniteHandler();
+    },
+
+    onSortChange() {
+      // Store sorting in URL
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          sortField: this.sort.field || undefined,
+          sortOrder: this.sort.direction === 1 ? undefined : -1
+        }
+      });
+      this.sortJobs();
+      this.resetInfiniteHandler();
     },
 
     clearDate() {
@@ -348,7 +387,7 @@ export default {
 
     async loadJobs() {
       // Load jobs from API, default is load last 10 days
-      const filter = { daysAgo: 10 };
+      const filter = { daysAgo: 7 };
       if (this.search) {
         filter.search = `"${this.search}"`;
         this.searchText = this.search;
@@ -395,7 +434,7 @@ export default {
     };
     this.search = this.$route.query.search || "";
 
-    this.loadDays();
+    await this.loadDays();
 
     // Watch any new logs
     connect();
@@ -419,7 +458,7 @@ export default {
 
     sort: {
       handler() {
-        this.sortJobs();
+        this.onSortChange();
       },
       deep: true
     }

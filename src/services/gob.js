@@ -192,7 +192,7 @@ function getDurationSecs(duration, starttime, endtime) {
 export async function getJobs(filter) {
   let data = await queryJobs(filter);
 
-  let jobs = data.jobs.filter(job => job.processId);
+  let jobs = data.jobs;
   let jobIds = {};
 
   jobs.forEach(job => {
