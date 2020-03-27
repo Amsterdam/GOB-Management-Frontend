@@ -155,6 +155,10 @@
           {{ activity }}
           <font-awesome-icon v-if="activity" icon="cog" class="fa-spin" />
         </span>
+        <span v-if="locks">
+          {{ locks }}
+          <font-awesome-icon v-if="locks" icon="lock" />
+        </span>
         <span v-else> &nbsp; </span>
       </b-badge>
     </div>
@@ -168,6 +172,7 @@ import ServiceDetail from "./ServiceDetail";
 import Queues from "./Queues";
 import DbInfo from "./DbInfo";
 import { getQueues } from "../services/gob";
+import { get_db_locks } from "../services/gob_api";
 
 const REFRESH_INTERVAL = 5000;
 
@@ -181,6 +186,7 @@ export default {
     return {
       services: {},
       activity: null,
+      locks: null,
       timeout: null
     };
   },
@@ -192,12 +198,15 @@ export default {
           (alive, service) => alive && isAlive(service),
           true
         );
-      return allAlive ? "success" : "danger";
+      let no_locks = !this.locks;
+      return allAlive && no_locks ? "success" : "danger";
     }
   },
   methods: {
     async monitorServices() {
       this.services = await services();
+      let locks = await get_db_locks();
+      this.locks = locks.length;
       let queues = await getQueues();
       this.activity = queues.reduce(
         (s, q) => s + q.messages_unacknowledged + q.messages_ready,
