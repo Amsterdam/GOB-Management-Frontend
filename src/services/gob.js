@@ -222,7 +222,10 @@ export async function getJobs(filter) {
     const jobId = `${job.name}.${job.source}.${job.application}.${job.entity}.${job.attribute}`;
     if (jobIds[jobId]) {
       job.execution = "voorgaande";
+    } else if (["scheduled", "started"].includes(job.status)) {
+      job.execution = "lopende";
     } else {
+      // ended, failed or rejected
       job.execution = "recentste";
       jobIds[jobId] = true;
     }
