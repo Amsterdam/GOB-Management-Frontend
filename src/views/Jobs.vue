@@ -39,7 +39,7 @@
               title="Ververs"
               variant="primary"
               :disabled="loading"
-              @click="loadDays()"
+              @click="loadDays(false)"
             >
               <span>
                 Refresh
@@ -277,7 +277,7 @@ export default {
       this.sortJobs();
     },
 
-    async loadDays() {
+    async loadDays(useCache = true) {
       // This method is called on mount and on refresh
       this.loading = true;
       this.new_logs = false;
@@ -288,7 +288,7 @@ export default {
       }
 
       // Start loading jobs from API
-      await this.loadJobs();
+      await this.loadJobs(useCache);
 
       // Read filter from URL parameters
       for (let key in this.filter) {
@@ -385,7 +385,7 @@ export default {
       this.$forceUpdate();
     },
 
-    async loadJobs() {
+    async loadJobs(useCache = true) {
       // Load jobs from API, default is load last 10 days
       const filter = { daysAgo: 7 };
       if (this.search) {
@@ -397,7 +397,7 @@ export default {
       this.$router.push({
         query: { ...this.$route.query, search: this.search || undefined }
       });
-      this.allJobs = await getJobs(filter);
+      this.allJobs = await getJobs(filter, useCache);
     },
 
     filterJobs(date = null) {
