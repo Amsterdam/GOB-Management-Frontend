@@ -78,6 +78,8 @@ const Tooltips = {
   check_relation: "Compare relation table with entity relations",
   export: "Export data",
   export_test: "Verify exported data",
+  e2e_test: "End-to-end test task",
+  e2e_check: "End-to-end test result check",
   workflow: "Start a workflow",
   logs: "Regular log message",
   heartbeat: "Report GOB module to be alive",
