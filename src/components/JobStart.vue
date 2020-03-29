@@ -40,7 +40,7 @@ export default {
     title: String,
     action: String,
     catalog: String,
-    collection: Array
+    collection: null
   },
   data() {
     return {
@@ -69,7 +69,12 @@ export default {
       }
       user = `${user} (Iris)`;
 
-      for (let collection of this.collection || [null]) {
+      let collections = this.collection || [];
+      if (!Array.isArray(collections)) {
+        collections = [collections];
+      }
+
+      for (let collection of collections) {
         let result = await createJob(
           this.action,
           this.catalog,
