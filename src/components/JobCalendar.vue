@@ -1,12 +1,16 @@
 <template>
-  <v-calendar
-    ref="calendar"
-    :attributes="attrs"
-    @dayclick="onDay"
-    @update:fromPage="onPage"
-    :fromPage="page"
-  >
-  </v-calendar>
+  <div>
+    <v-calendar
+      ref="calendar"
+      :is-expanded="false"
+      :pane-width="200"
+      :attributes="attrs"
+      @dayclick="onDay"
+      @update:fromPage="onPage"
+      :fromPage="page"
+    >
+    </v-calendar>
+  </div>
 </template>
 
 <script>

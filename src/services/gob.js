@@ -189,7 +189,24 @@ function getDurationSecs(duration, starttime, endtime) {
   }
 }
 
-export async function getJobs(filter) {
+// getJobs is an expensive function
+// Therefore cache the result of getJobs during two and a halve minutes
+const MAX_CACHE_AGE = 2.5 * 60 * 1000;
+const JOBS_CACHE = {
+  jobs: null,
+  timestamp: null
+};
+
+export async function getJobs(filter, useCache = true) {
+  if (
+    useCache &&
+    JOBS_CACHE.jobs &&
+    Date.now() - JOBS_CACHE.timestamp <= MAX_CACHE_AGE
+  ) {
+    // Cached jobs is requested and cached jobs exist and are recent enough
+    return JOBS_CACHE.jobs;
+  }
+
   let data = await queryJobs(filter);
 
   let jobs = data.jobs;
@@ -222,11 +239,16 @@ export async function getJobs(filter) {
     const jobId = `${job.name}.${job.source}.${job.application}.${job.entity}.${job.attribute}`;
     if (jobIds[jobId]) {
       job.execution = "voorgaande";
+    } else if (["scheduled", "started"].includes(job.status)) {
+      job.execution = "lopende";
     } else {
+      // ended, failed or rejected
       job.execution = "recentste";
       jobIds[jobId] = true;
     }
   });
+  JOBS_CACHE.jobs = jobs;
+  JOBS_CACHE.timestamp = Date.now();
   return jobs;
 }
 
