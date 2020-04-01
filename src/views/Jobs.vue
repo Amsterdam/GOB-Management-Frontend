@@ -247,15 +247,15 @@ export default {
     setFilteredJobs() {
       this.allFilteredJobs = this.jobs.filter(job => {
         // default filter is on current year month
-        const year = this.filter.year[0] || new Date().getFullYear();
-        const month = this.filter.month[0] || new Date().getMonth() + 1;
+        const year = this.filter.year[0];
+        const month = this.filter.month[0];
         const jobStart = new Date(job.starttime);
 
         const match = key => this.matchFilter(job, key);
 
         return (
-          jobStart.getFullYear() === year &&
-          jobStart.getMonth() + 1 === month &&
+          (year ? jobStart.getFullYear() === year : true) &&
+          (month ? jobStart.getMonth() + 1 === month : true) &&
           match("catalogue") &&
           match("entity") &&
           match("application") &&
