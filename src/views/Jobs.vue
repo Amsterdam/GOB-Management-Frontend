@@ -254,8 +254,8 @@ export default {
         const match = key => this.matchFilter(job, key);
 
         return (
-          (year ? jobStart.getFullYear() === year : true) &&
-          (month ? jobStart.getMonth() + 1 === month : true) &&
+          (!year || jobStart.getFullYear() === year) &&
+          (!month || jobStart.getMonth() + 1 === month) &&
           match("catalogue") &&
           match("entity") &&
           match("application") &&
