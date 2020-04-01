@@ -194,6 +194,7 @@ function getDurationSecs(duration, starttime, endtime) {
 const MAX_CACHE_AGE = 2.5 * 60 * 1000;
 const JOBS_CACHE = {
   jobs: null,
+  filter: null,
   timestamp: null
 };
 
@@ -201,6 +202,7 @@ export async function getJobs(filter, useCache = true) {
   if (
     useCache &&
     JOBS_CACHE.jobs &&
+    JOBS_CACHE.filter === JSON.stringify(filter) &&
     Date.now() - JOBS_CACHE.timestamp <= MAX_CACHE_AGE
   ) {
     // Cached jobs is requested and cached jobs exist and are recent enough
@@ -248,6 +250,7 @@ export async function getJobs(filter, useCache = true) {
     }
   });
   JOBS_CACHE.jobs = jobs;
+  JOBS_CACHE.filter = JSON.stringify(filter);
   JOBS_CACHE.timestamp = Date.now();
   return jobs;
 }
