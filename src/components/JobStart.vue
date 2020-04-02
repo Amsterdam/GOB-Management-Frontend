@@ -74,6 +74,9 @@ export default {
         collections = [collections];
       }
 
+      if (!collections.length) {
+        collections = [null];
+      }
       for (let collection of collections) {
         let result = await createJob(
           this.action,
