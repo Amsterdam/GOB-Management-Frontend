@@ -6,7 +6,7 @@
         no-body
         class="mb-1"
         v-for="(collections, catalog) in catalogCollections"
-        v-if="!['rel', 'test_catalogue'].includes(catalog)"
+        v-if="!['rel', 'test_catalogue', 'qa'].includes(catalog)"
         :key="catalog"
       >
         <b-card-header header-tag="header" class="p-1" role="tab">
