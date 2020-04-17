@@ -254,8 +254,84 @@ export default {
       }
     },
 
+    async loadPieCharts() {
+      let jobs = await getJobs();
+      let catalogs = await catalogues();
+
+      jobs = jobs.filter(job => job.execution === "recentste");
+
+      this.jobs = jobs;
+      this.catalogs = catalogs;
+      this.selectedCatalog = catalogs && catalogs[0];
+
+      const prs = ["import", "relate", "export", "export_test", "dump"];
+
+      this.catalogs.forEach(catalog => {
+        this.timeData[catalog] = [
+          [
+            { type: "string", id: "Verwerking" },
+            { type: "string", id: "row label" },
+            { type: "date", id: "Start" },
+            { type: "date", id: "Eind" }
+          ]
+        ];
+        this.stats[catalog] = {};
+        this.jobData[catalog] = {};
+
+        prs.forEach(pr => {
+          // Get begin and end the process
+          const starttime = this.firstProcess(catalog, pr);
+          const endtime = this.lastProcess(catalog, pr);
+
+          // Get all jobs for the process
+          const catalogJobs = this.jobs.filter(
+            job => job.catalogue === catalog && job.name.toLowerCase() === pr
+          );
+
+          const warningJobs = catalogJobs.filter(job => job.warnings > 0);
+          const errorJobs = catalogJobs.filter(job => job.errors > 0);
+          const infoOnlyJobs = catalogJobs.filter(
+            job => job.errors <= 0 && job.warnings <= 0
+          );
+          this.jobData[catalog][pr] = [
+            ["Job klasse", "Aantal"],
+            ["Jobs zonder meldingen", infoOnlyJobs.length],
+            ["Jobs met waarschuwingen", warningJobs.length],
+            ["Jobs met fouten", errorJobs.length]
+          ];
+
+          let infos = catalogJobs.reduce((infos, job) => infos + job.infos, 0);
+          let errors = catalogJobs.reduce(
+            (errors, job) => errors + job.errors,
+            0
+          );
+          let warnings = catalogJobs.reduce(
+            (warnings, job) => warnings + job.warnings,
+            0
+          );
+          this.stats[catalog][pr] = {
+            infos,
+            errors,
+            warnings
+          };
+
+          const rowLabel = `${pr} ${moment(starttime).format(
+            "DD-MM HH:mm"
+          )} - ${moment(endtime).format("DD-MM HH:mm")}`;
+          if (starttime && endtime) {
+            this.timeData[catalog].push([pr, rowLabel, starttime, endtime]);
+          }
+        });
+      });
+    },
+
     updateWeeklySummaryGraphOptions(selectedCatalog, weekSummaryData) {
-      if (!this.chartsLib || !weekSummaryData || !weekSummaryData[selectedCatalog]) return;
+      if (
+        !this.chartsLib ||
+        !weekSummaryData ||
+        !weekSummaryData[selectedCatalog]
+      )
+        return;
       let selectedData = weekSummaryData[selectedCatalog];
 
       // Get maximum value, ignore first row and first column of each row.
@@ -313,76 +389,10 @@ export default {
       });
     }
   },
+
   async mounted() {
-    let jobs = await getJobs();
-    let catalogs = await catalogues();
-
-    jobs = jobs.filter(job => job.execution === "recentste");
-
-    this.jobs = jobs;
-    this.catalogs = catalogs;
-    this.selectedCatalog = catalogs && catalogs[0];
-
-    const prs = ["import", "relate", "export", "export_test", "dump"];
-
-    this.catalogs.forEach(catalog => {
-      this.timeData[catalog] = [
-        [
-          { type: "string", id: "Verwerking" },
-          { type: "string", id: "row label" },
-          { type: "date", id: "Start" },
-          { type: "date", id: "Eind" }
-        ]
-      ];
-      this.stats[catalog] = {};
-      this.jobData[catalog] = {};
-
-      prs.forEach(pr => {
-        // Get begin and end the process
-        const starttime = this.firstProcess(catalog, pr);
-        const endtime = this.lastProcess(catalog, pr);
-
-        // Get all jobs for the process
-        const catalogJobs = this.jobs.filter(
-          job => job.catalogue === catalog && job.name.toLowerCase() === pr
-        );
-
-        const warningJobs = catalogJobs.filter(job => job.warnings > 0);
-        const errorJobs = catalogJobs.filter(job => job.errors > 0);
-        const infoOnlyJobs = catalogJobs.filter(
-          job => job.errors <= 0 && job.warnings <= 0
-        );
-        this.jobData[catalog][pr] = [
-          ["Job klasse", "Aantal"],
-          ["Jobs zonder meldingen", infoOnlyJobs.length],
-          ["Jobs met waarschuwingen", warningJobs.length],
-          ["Jobs met fouten", errorJobs.length]
-        ];
-
-        let infos = catalogJobs.reduce((infos, job) => infos + job.infos, 0);
-        let errors = catalogJobs.reduce(
-          (errors, job) => errors + job.errors,
-          0
-        );
-        let warnings = catalogJobs.reduce(
-          (warnings, job) => warnings + job.warnings,
-          0
-        );
-        this.stats[catalog][pr] = {
-          infos,
-          errors,
-          warnings
-        };
-
-        const rowLabel = `${pr} ${moment(starttime).format(
-          "DD-MM HH:mm"
-        )} - ${moment(endtime).format("DD-MM HH:mm")}`;
-        if (starttime && endtime) {
-          this.timeData[catalog].push([pr, rowLabel, starttime, endtime]);
-        }
-      });
-    });
-    this.loadWeeklySummary();
+    // Load pie charts and weekly summary in parallel
+    await Promise.all([this.loadPieCharts(), this.loadWeeklySummary()]);
   },
   destroyed() {}
 };
