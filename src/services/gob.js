@@ -304,46 +304,54 @@ export async function getQueues() {
  * }
  */
 export async function getWeeklySummary() {
-  let jobs = await getJobs({daysAgo: 7});
+  let jobs = await getJobs({ daysAgo: 7 });
 
-  function uniqueValues (listOfObjects, key, keyTransform) {
+  function uniqueValues(listOfObjects, key, keyTransform) {
     // Filters get unique values for key from listOfObjects, ignoring null values.
     keyTransform = keyTransform || (x => x);
-    return [... new Set(listOfObjects.filter(o => o[key]).map(o => keyTransform(o[key])))];
+    return [
+      ...new Set(
+        listOfObjects.filter(o => o[key]).map(o => keyTransform(o[key]))
+      )
+    ];
   }
 
   function padZero(val, length = 2) {
-    val += ''
+    val += "";
     while (val.length < length) {
-      val = '0' + val
+      val = "0" + val;
     }
     return val;
   }
 
   function formatDate(dtString) {
     let dt = new Date(dtString);
-    return padZero(dt.getDate()) + '-' + padZero(dt.getMonth());
+    return padZero(dt.getDate()) + "-" + padZero(dt.getMonth());
   }
   let summary = {};
 
   // Pre-initialise result matrix, so that all combinations are present.
-  for (let c of uniqueValues(jobs, 'catalogue')) {
+  for (let c of uniqueValues(jobs, "catalogue")) {
     summary[c] = {};
-    for (let d of uniqueValues(jobs, 'starttime', formatDate)) {
+    for (let d of uniqueValues(jobs, "starttime", formatDate)) {
       summary[c][d] = {};
-      for (let j of uniqueValues(jobs, 'name')) {
+      for (let j of uniqueValues(jobs, "name")) {
         summary[c][d][j.toLowerCase()] = {
           total_jobs: 0,
           with_errors: 0
-        }
+        };
       }
     }
   }
 
   for (let job of jobs.filter(j => j.starttime && j.catalogue && j.name)) {
-    summary[job.catalogue][formatDate(job.starttime)][job.name.toLowerCase()].total_jobs += 1;
+    summary[job.catalogue][formatDate(job.starttime)][
+      job.name.toLowerCase()
+    ].total_jobs += 1;
     if (job.errors) {
-      summary[job.catalogue][formatDate(job.starttime)][job.name.toLowerCase()].with_errors += 1;
+      summary[job.catalogue][formatDate(job.starttime)][
+        job.name.toLowerCase()
+      ].with_errors += 1;
     }
   }
   return summary;
