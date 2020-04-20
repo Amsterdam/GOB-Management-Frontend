@@ -20,6 +20,16 @@
             >Jobs met waarschuwingen</b-btn
           >
         </div>
+        <div class="mb-1">
+          <b-btn block variant="primary" @click="filterOnDataErrors()"
+            >Jobs met datafouten</b-btn
+          >
+        </div>
+        <div class="mb-1">
+          <b-btn block variant="primary" @click="filterOnDataWarnings()"
+            >Jobs met datawaarschuwingen</b-btn
+          >
+        </div>
         <div>
           <b-btn block variant="primary" @click="clearFilter()"
             >Reset filters</b-btn
@@ -93,6 +103,16 @@ export default {
       this.filter.ageCategory = [" 0 - 24 uur"];
       this.filter.messageTypes = ["warnings"];
     },
+    filterOnDataErrors() {
+      this.clearFilter();
+      this.filter.ageCategory = [" 0 - 24 uur"];
+      this.filter.messageTypes = ["dataerrors"];
+    },
+    filterOnDataWarnings() {
+      this.clearFilter();
+      this.filter.ageCategory = [" 0 - 24 uur"];
+      this.filter.messageTypes = ["datawarnings"];
+    },
     filterOptions(key) {
       return _.uniq(
         this.jobs
@@ -123,7 +143,10 @@ export default {
       messageTypes: [
         { text: "Info", value: "infos" },
         { text: "Warning", value: "warnings" },
-        { text: "Error", value: "errors" }
+        { text: "Error", value: "errors" },
+        { text: "Data Info", value: "datainfos" },
+        { text: "Data Warning", value: "datawarnings" },
+        { text: "Data Error", value: "dataerrors" }
       ]
     };
   }
