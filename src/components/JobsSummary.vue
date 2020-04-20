@@ -1,7 +1,7 @@
 <template>
   <div v-if="selectedCatalog">
     <h2>{{ selectedCatalog }} jobs afgelopen week</h2>
-    <div v-if="weekSummaryData">
+    <div v-if="weekSummaryData[selectedCatalog]">
       <GChart
         :settings="{ packages: ['bar'] }"
         :data="weekSummaryData[selectedCatalog]"
@@ -10,6 +10,7 @@
         @ready="onChartReady"
       />
     </div>
+    <div v-else-if="weekSummaryData">Geen data voor {{ selectedCatalog }}</div>
     <div v-else>
       Loading...
     </div>
@@ -160,7 +161,20 @@ export default {
   async mounted() {
     this.loadWeeklySummary();
   },
-  watch: {}
+  watch: {
+    selectedCatalog: function(selectedCatalog) {
+      this.updateWeeklySummaryGraphOptions(
+        selectedCatalog,
+        this.weekSummaryData
+      );
+    },
+    weekSummaryData: function(weekSummaryData) {
+      this.updateWeeklySummaryGraphOptions(
+        this.selectedCatalog,
+        weekSummaryData
+      );
+    }
+  }
 };
 </script>
 
