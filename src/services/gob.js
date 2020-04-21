@@ -238,15 +238,15 @@ export async function getJobs(filter, useCache = true) {
       job.starttime,
       job.endtime
     );
-    const jobId = `${job.name}.${job.source}.${job.application}.${job.entity}.${job.attribute}`;
-    if (jobIds[jobId]) {
+    job.jobId = `${job.name}.${job.source}.${job.application}.${job.entity}.${job.attribute}`;
+    if (jobIds[job.jobId]) {
       job.execution = "voorgaande";
     } else if (["scheduled", "started"].includes(job.status)) {
       job.execution = "lopende";
     } else {
       // ended, failed or rejected
       job.execution = "recentste";
-      jobIds[jobId] = true;
+      jobIds[job.jobId] = true;
     }
   });
   JOBS_CACHE.jobs = jobs;
@@ -280,15 +280,69 @@ export async function getQueues() {
 }
 
 /**
- * Returns summary of jobs from last 7 days including today.
+ * Example:
+ * padZero(2, 3) => 002
+ * padZero(2, 1) => 2
+ * padZero(2, 5) => 00002
+ *
+ * @param val
+ * @param length
+ * @returns {string}
+ */
+function padZero(val, length = 2) {
+  val += "";
+  while (val.length < length) {
+    val = "0" + val;
+  }
+  return val;
+}
+
+/**
+ * ISO datetime string to day-month format:
+ *
+ * 2020-04-20T11:31:25.819Z => 20-04
+ *
+ * @param dtString
+ * @returns {string}
+ */
+function formatDate(dtString) {
+  let dt = new Date(dtString);
+  return padZero(dt.getDate()) + "-" + padZero(dt.getMonth());
+}
+
+/**
+ * Returns the unique values for key in listOfObjects.
+ * Optionally takes valueTransform function.
+ *
+ * @param listOfObjects
+ * @param key
+ * @param valueTransform
+ * @returns {any[]}
+ */
+function uniqueValues(listOfObjects, key, valueTransform) {
+  // Filters get unique values for key from listOfObjects, ignoring null values.
+  valueTransform = valueTransform || (x => x);
+  return [
+    ...new Set(
+      listOfObjects.filter(o => o[key]).map(o => valueTransform(o[key]))
+    )
+  ];
+}
+
+/**
+ * Returns summary of jobs from last n days including today. Default is 7 days.
+ * Includes only the most recent job of a kind (type, catalogue, entity, application, ... ) for a day.
  *
  * Format:
  * {
  *     'bag': {
  *         '04-17': {
  *             'export': {
+ *                 'jobs': [.., .. , ..]
  *                 'total_jobs': 10,
  *                 'with_errors': 5,
+ *                 'bruto_total': 204,
+ *                 'netto_total': 024
  *             },
  *             ...
  *         },
@@ -303,55 +357,45 @@ export async function getQueues() {
  *     ...
  * }
  */
-export async function getWeeklySummary() {
-  let jobs = await getJobs({ daysAgo: 7 });
+export async function getJobsSummary(daysAgo) {
+  let jobs = await getJobs({ daysAgo: daysAgo || 7 });
 
-  function uniqueValues(listOfObjects, key, keyTransform) {
-    // Filters get unique values for key from listOfObjects, ignoring null values.
-    keyTransform = keyTransform || (x => x);
-    return [
-      ...new Set(
-        listOfObjects.filter(o => o[key]).map(o => keyTransform(o[key]))
-      )
-    ];
-  }
-
-  function padZero(val, length = 2) {
-    val += "";
-    while (val.length < length) {
-      val = "0" + val;
-    }
-    return val;
-  }
-
-  function formatDate(dtString) {
-    let dt = new Date(dtString);
-    return padZero(dt.getDate()) + "-" + padZero(dt.getMonth());
-  }
   let summary = {};
 
   // Pre-initialise result matrix, so that all combinations are present.
   for (let c of uniqueValues(jobs, "catalogue")) {
     summary[c] = {};
-    for (let d of uniqueValues(jobs, "starttime", formatDate)) {
+    for (let d of uniqueValues(jobs, "starttime", formatDate).sort()) {
       summary[c][d] = {};
       for (let j of uniqueValues(jobs, "name")) {
         summary[c][d][j.toLowerCase()] = {
+          jobs: [],
           total_jobs: 0,
-          with_errors: 0
+          with_errors: 0,
+          bruto_total: 0,
+          netto_total: 0
         };
       }
     }
   }
 
   for (let job of jobs.filter(j => j.starttime && j.catalogue && j.name)) {
-    summary[job.catalogue][formatDate(job.starttime)][
-      job.name.toLowerCase()
-    ].total_jobs += 1;
-    if (job.errors) {
-      summary[job.catalogue][formatDate(job.starttime)][
-        job.name.toLowerCase()
-      ].with_errors += 1;
+    let entry =
+      summary[job.catalogue][formatDate(job.starttime)][job.name.toLowerCase()];
+
+    // Only add job if no job exists yet with the same jobId (meaning it is the same type of job)
+    // Jobs are in descending chronological order, so we only keep the most recent job of a type per day.
+    let existingJob = entry.jobs.filter(j => j.jobId === job.jobId);
+
+    if (!existingJob.length) {
+      entry.jobs.push(job);
+      entry.total_jobs += 1;
+      entry.bruto_total += job.brutoSecs;
+      entry.netto_total += job.nettoSecs;
+
+      if (job.errors) {
+        entry.with_errors += 1;
+      }
     }
   }
   return summary;

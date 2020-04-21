@@ -79,6 +79,7 @@
     <div v-else>
       Loading...
     </div>
+    <jobs-times-graph :selected-catalog="selectedCatalog"> </jobs-times-graph>
   </div>
 </template>
 
@@ -88,6 +89,7 @@ import { GChart } from "vue-google-charts";
 
 import { getJobs, catalogues } from "../services/gob";
 import JobsSummary from "./JobsSummary";
+import JobsTimesGraph from "./JobsTimesGraph";
 
 const PROCESSES = ["import", "relate", "export", "export_test", "dump"];
 
@@ -95,6 +97,7 @@ export default {
   name: "Dashboard",
   components: {
     JobsSummary,
+    JobsTimesGraph,
     GChart
   },
   data() {

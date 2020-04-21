@@ -1,3 +1,13 @@
+export const defaultOrdering = [
+  "prepare",
+  "import",
+  "relate",
+  "export",
+  "export_test",
+  "dump",
+  "data consistency e2e test"
+];
+
 // Amsterdam specific job info
 
 export const allJobs = [
