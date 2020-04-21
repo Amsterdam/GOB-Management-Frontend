@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:10-jessie
 
 # Use NPMSCRIPT=builddev for local dockers
 ARG NPMSCRIPT=build
@@ -7,7 +7,7 @@ MAINTAINER datapunt@amsterdam.nl
 
 EXPOSE 80
 
-RUN apt-get update && apt-get install -y git nginx
+RUN apt-get update && apt-get install -y git nginx && rm -rf /var/lib/apt/lists/*
 
 COPY package.json /app/
 
@@ -28,5 +28,6 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
  && ln -sf /dev/stderr /var/log/nginx/error.log
 
 RUN rm -f /etc/nginx/sites-enabled/default
+
 COPY default.conf /etc/nginx/conf.d/
 CMD ["nginx", "-g", "daemon off;"]
