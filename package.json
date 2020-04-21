@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "builddev": "vue-cli-service build --mode development",
-    "lint": "vue-cli-service lint",
+    "lint": "vue-cli-service lint --no-fix --max-warnings 0",
+    "lintfix": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
