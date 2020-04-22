@@ -79,6 +79,7 @@
     <div v-else>
       Loading...
     </div>
+    <jobs-times-graph :selected-catalog="selectedCatalog"> </jobs-times-graph>
   </div>
 </template>
 
@@ -88,6 +89,7 @@ import { GChart } from "vue-google-charts";
 
 import { getJobs, catalogues } from "../services/gob";
 import JobsSummary from "./JobsSummary";
+import JobsTimesGraph from "./JobsTimesGraph";
 
 const PROCESSES = ["import", "relate", "export", "export_test", "dump"];
 
@@ -95,6 +97,7 @@ export default {
   name: "Dashboard",
   components: {
     JobsSummary,
+    JobsTimesGraph,
     GChart
   },
   data() {
@@ -226,9 +229,12 @@ export default {
             warnings
           };
 
-          const rowLabel = `${pr} ${moment(starttime).format(
-            "DD-MM HH:mm"
-          )} - ${moment(endtime).format("DD-MM HH:mm")}`;
+          const rowLabel = `${pr} ${moment(starttime)
+            .tz("CET")
+            .format("DD-MM HH:mm")} - ${moment(endtime)
+            .tz("CET")
+            .format("DD-MM HH:mm")}`;
+
           if (starttime && endtime) {
             this.timeData[catalog].push([pr, rowLabel, starttime, endtime]);
           }

@@ -19,9 +19,11 @@ export default {
     },
     levels() {
       return this.jobs.reduce((level, job) => {
-        ["infos", "warnings", "errors"].forEach(l => {
-          level[l] = (level[l] || 0) + job[l];
-        });
+        ["infos", "warnings", "errors", "datawarnings", "dataerrors"].forEach(
+          l => {
+            level[l] = (level[l] || 0) + job[l];
+          }
+        );
         return level;
       }, {});
     }

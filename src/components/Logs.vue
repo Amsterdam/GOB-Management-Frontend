@@ -109,7 +109,10 @@ export default {
   },
   computed: {
     msgids() {
-      return _.uniqBy(this.logs.filter(l => l.msgid), "msgid");
+      return _.uniqBy(
+        this.logs.filter(l => l.msgid),
+        "msgid"
+      );
     }
   }
 };

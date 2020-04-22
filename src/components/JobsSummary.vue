@@ -1,24 +1,33 @@
 <template>
-  <div v-if="selectedCatalog">
-    <h2>{{ selectedCatalog }} jobs afgelopen week</h2>
-    <div v-if="weekSummaryData[selectedCatalog]">
-      <GChart
-        :settings="{ packages: ['bar'] }"
-        :data="weekSummaryData[selectedCatalog]"
-        :options="weekSummaryChartOptions"
-        :createChart="(el, google) => new google.charts.Bar(el)"
-        @ready="onChartReady"
-      />
-    </div>
-    <div v-else-if="weekSummaryData">Geen data voor {{ selectedCatalog }}</div>
-    <div v-else>
-      Loading...
-    </div>
-  </div>
+  <b-container v-if="selectedCatalog">
+    <b-row>
+      <b-col class="mb-5">
+        <h2>{{ selectedCatalog }} jobs afgelopen week</h2>
+        <div v-if="weekSummaryData && weekSummaryData[selectedCatalog]">
+          <GChart
+            :settings="{ packages: ['bar'] }"
+            :data="weekSummaryData[selectedCatalog]"
+            :options="weekSummaryChartOptions"
+            :createChart="(el, google) => new google.charts.Bar(el)"
+            :events="chartEvents"
+            ref="weekSummaryChart"
+            @ready="onChartReady"
+          />
+        </div>
+        <div v-else-if="weekSummaryData">
+          Geen data voor {{ selectedCatalog }}
+        </div>
+        <div v-else>
+          Loading...
+        </div>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
-import { getWeeklySummary } from "../services/gob";
+import { getJobsSummary } from "../services/gob";
+import { defaultOrdering } from "../config/jobs";
 
 export default {
   name: "JobsSummary",
@@ -29,7 +38,34 @@ export default {
     return {
       chartsLib: null,
       weekSummaryData: null,
-      weekSummaryChartOptions: {}
+      weekSummaryChartOptions: {},
+      chartEvents: {
+        select: () => {
+          // On selection (click) of bar, redirect to Jobs overview
+          const selection = this.$refs.weekSummaryChart.chartObject.getSelection();
+
+          if (selection.length) {
+            let date = this.weekSummaryData[this.selectedCatalog][
+              selection[0].row + 1
+            ][0];
+            let job = this.weekSummaryData[this.selectedCatalog][0][
+              selection[0].column
+            ];
+            let [day, month] = date.split("-");
+
+            this.$router.push({
+              name: "jobs",
+              query: {
+                catalogue: this.selectedCatalog,
+                year: new Date().getFullYear(),
+                day: day,
+                month: month,
+                name: job
+              }
+            });
+          }
+        }
+      }
     };
   },
   methods: {
@@ -42,16 +78,8 @@ export default {
     },
 
     async loadWeeklySummary() {
-      const ordering = [
-        "prepare",
-        "import",
-        "relate",
-        "export",
-        "export_test",
-        "dump",
-        "data_consistency_test"
-      ];
-      let summary = await getWeeklySummary();
+      const ordering = defaultOrdering;
+      let summary = await getJobsSummary();
       this.weekSummaryData = {};
 
       // Transform to format understood by GChart library
@@ -62,6 +90,7 @@ export default {
         let firstKey = Object.keys(summaryData)[0];
         let firstRow = new Array(Object.keys(summaryData[firstKey]).length);
         firstRow[0] = "";
+        catalogData.push(firstRow);
 
         for (let key of Object.keys(summaryData[firstKey])) {
           let processIdx = ordering.indexOf(key);
@@ -84,11 +113,6 @@ export default {
           }
           catalogData.push(row);
         }
-
-        // Sort dates, remove possibly incomplete first day and prepend firstRow (header)
-        catalogData.sort((a, b) => (a[0] > b[0] ? 1 : -1));
-        catalogData = catalogData.slice(1);
-        catalogData.unshift(firstRow);
 
         this.weekSummaryData[catalog] = catalogData;
       }

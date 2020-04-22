@@ -102,6 +102,9 @@ export async function queryJobs(filter = {}) {
       infos,
       warnings,
       errors,
+      datainfos,
+      datawarnings,
+      dataerrors,
       step,
       status,
       user

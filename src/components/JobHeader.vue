@@ -5,7 +5,14 @@
     {{ job.catalogue }}
     {{ job.entity }}
     <b-badge
-      v-for="level in ['infos', 'warnings', 'errors']"
+      v-for="level in [
+        'infos',
+        'warnings',
+        'errors',
+        'datainfos',
+        'datawarnings',
+        'dataerrors'
+      ]"
       :key="level"
       class="ml-2"
       :class="level"
