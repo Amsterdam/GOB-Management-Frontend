@@ -229,9 +229,12 @@ export default {
             warnings
           };
 
-          const rowLabel = `${pr} ${moment(starttime).format(
-            "DD-MM HH:mm"
-          )} - ${moment(endtime).format("DD-MM HH:mm")}`;
+          const rowLabel = `${pr} ${moment(starttime)
+            .tz("CET")
+            .format("DD-MM HH:mm")} - ${moment(endtime)
+            .tz("CET")
+            .format("DD-MM HH:mm")}`;
+
           if (starttime && endtime) {
             this.timeData[catalog].push([pr, rowLabel, starttime, endtime]);
           }

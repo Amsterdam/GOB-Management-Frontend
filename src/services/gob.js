@@ -221,6 +221,10 @@ export async function getJobs(filter, useCache = true) {
         .tz("CET")
         .startOf("day")
     );
+
+    job.starttime = new Date(moment.utc(job.starttime));
+    job.endtime = new Date(moment.utc(job.endtime));
+
     job.ago = moment(Date.now()).diff(moment(job.starttime));
     job.duration = moment.duration(
       moment(job.endtime).diff(moment(job.starttime))
