@@ -9,6 +9,8 @@
             :data="weekSummaryData[selectedCatalog]"
             :options="weekSummaryChartOptions"
             :createChart="(el, google) => new google.charts.Bar(el)"
+            :events="chartEvents"
+            ref="weekSummaryChart"
             @ready="onChartReady"
           />
         </div>
@@ -36,7 +38,34 @@ export default {
     return {
       chartsLib: null,
       weekSummaryData: null,
-      weekSummaryChartOptions: {}
+      weekSummaryChartOptions: {},
+      chartEvents: {
+        select: () => {
+          // On selection (click) of bar, redirect to Jobs overview
+          const selection = this.$refs.weekSummaryChart.chartObject.getSelection();
+
+          if (selection.length) {
+            let date = this.weekSummaryData[this.selectedCatalog][
+              selection[0].row + 1
+            ][0];
+            let job = this.weekSummaryData[this.selectedCatalog][0][
+              selection[0].column
+            ];
+            let [day, month] = date.split("-");
+
+            this.$router.push({
+              name: "jobs",
+              query: {
+                catalogue: this.selectedCatalog,
+                year: new Date().getFullYear(),
+                day: day,
+                month: month,
+                name: job
+              }
+            });
+          }
+        }
+      }
     };
   },
   methods: {
