@@ -37,6 +37,7 @@ export default {
   data() {
     return {
       chartsLib: null,
+      withErrorsPostfix: " with errors",
       weekSummaryData: null,
       weekSummaryChartOptions: {},
       chartEvents: {
@@ -50,18 +51,27 @@ export default {
             ][0];
             let job = this.weekSummaryData[this.selectedCatalog][0][
               selection[0].column
-            ];
+            ].replace("_", " "); // Jobs overview expects spaces instead of underscores
             let [day, month] = date.split("-");
+
+            let query = {
+              catalogue: this.selectedCatalog,
+              year: new Date().getFullYear(),
+              day: day,
+              month: month
+            };
+
+            if (job.indexOf(this.withErrorsPostfix) > -1) {
+              // Clicked on an errors bar. Filter on errors in Jobs overview
+              query.name = job.replace(this.withErrorsPostfix, "");
+              query.messageTypes = "errors";
+            } else {
+              query.name = job;
+            }
 
             this.$router.push({
               name: "jobs",
-              query: {
-                catalogue: this.selectedCatalog,
-                year: new Date().getFullYear(),
-                day: day,
-                month: month,
-                name: job
-              }
+              query: query
             });
           }
         }
@@ -97,7 +107,7 @@ export default {
           if (processIdx === -1) continue;
 
           firstRow[processIdx * 2 + 1] = key;
-          firstRow[processIdx * 2 + 2] = key + " with errors";
+          firstRow[processIdx * 2 + 2] = key + this.withErrorsPostfix;
         }
 
         // Fill data ([date, prepare_job_success_cnt, prepare_job_error_cnt, import_job_cnt, import_job_error_cnt, ... ])
