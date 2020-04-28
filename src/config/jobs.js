@@ -5,7 +5,7 @@ export const defaultOrdering = [
   "export",
   "export_test",
   "dump",
-  "data consistency e2e test"
+  "data consistency test"
 ];
 
 // Amsterdam specific job info
