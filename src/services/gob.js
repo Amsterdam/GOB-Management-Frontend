@@ -320,17 +320,11 @@ function formatDate(dtString) {
  *
  * @param listOfObjects
  * @param key
- * @param valueTransform
  * @returns {any[]}
  */
-function uniqueValues(listOfObjects, key, valueTransform) {
+function uniqueValues(listOfObjects, key) {
   // Filters get unique values for key from listOfObjects, ignoring null values.
-  valueTransform = valueTransform || (x => x);
-  return [
-    ...new Set(
-      listOfObjects.filter(o => o[key]).map(o => valueTransform(o[key]))
-    )
-  ];
+  return [...new Set(listOfObjects.filter(o => o[key]).map(o => o[key]))];
 }
 
 /**
@@ -365,11 +359,17 @@ export async function getJobsSummary(daysAgo) {
   let jobs = await getJobs({ daysAgo: daysAgo || 7 });
 
   let summary = {};
-
+  let startdates = [
+    ...new Set(
+      uniqueValues(jobs, "starttime")
+        .sort((a, b) => (new Date(a) > new Date(b) ? 1 : -1))
+        .map(o => formatDate(o))
+    )
+  ];
   // Pre-initialise result matrix, so that all combinations are present.
   for (let c of uniqueValues(jobs, "catalogue")) {
     summary[c] = {};
-    for (let d of uniqueValues(jobs, "starttime", formatDate).sort()) {
+    for (let d of startdates) {
       summary[c][d] = {};
       for (let j of uniqueValues(jobs, "name")) {
         summary[c][d][j.toLowerCase()] = {
