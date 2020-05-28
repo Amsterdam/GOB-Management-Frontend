@@ -58,7 +58,7 @@
     >
       <filter-item
         :title="filterType.text"
-        :visible="filterOptions(filterType.key).length <= 5"
+        :visible="filterOptions(filterType.key).length <= 10"
       >
         <b-form-group>
           <b-form-checkbox-group
