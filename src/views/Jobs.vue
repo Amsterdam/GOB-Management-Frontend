@@ -306,12 +306,14 @@ export default {
 
     onFilterChange() {
       // Store filter in URL
+      let query = this.$route.query;
       for (let key in this.filter) {
         let val = this.filter[key];
-        this.$router.push({
-          query: { ...this.$route.query, [key]: val.length ? val : undefined }
-        });
+        query = { ...query, [key]: val.length ? val : undefined };
       }
+      this.$router.push({
+        query: query
+      });
       this.applyFilter();
       this.resetInfiniteHandler();
     },
