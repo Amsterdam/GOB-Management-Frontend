@@ -8,20 +8,12 @@
         size="sm"
         variant="outline-dark"
         class="mb-2"
+        >{{ title }}</b-btn
       >
-        {{ title }}
-        <span v-if="whenClosed" class="when-closed">({{ whenClosed }})</span>
-        <span class="when-closed float-right">
-          <font-awesome-icon icon="chevron-down" />
-        </span>
-        <span class="when-opened float-right">
-          <font-awesome-icon icon="chevron-up" />
-        </span>
-      </b-btn>
+      <b-collapse :id="title + id" :visible="visible" class="mt-2">
+        <slot></slot>
+      </b-collapse>
     </div>
-    <b-collapse :visible="visible" :id="title + id" class="text-left">
-      <slot></slot>
-    </b-collapse>
   </div>
 </template>
 
@@ -49,9 +41,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.collapsed > .when-opened,
-:not(.collapsed) > .when-closed {
-  display: none;
-}
-</style>
+<style scoped></style>
