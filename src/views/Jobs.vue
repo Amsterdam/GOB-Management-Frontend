@@ -282,11 +282,6 @@ export default {
       this.loading = true;
       this.new_logs = false;
 
-      if (this.activeCollapseId) {
-        this.$root.$emit("bv::toggle::collapse", this.activeCollapseId);
-        this.activeCollapseId = null;
-      }
-
       // Start loading jobs from API
       await this.loadJobs(useCache);
 
