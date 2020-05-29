@@ -4,16 +4,26 @@
       <b-btn
         pill
         block
-        v-b-toggle="title + id"
+        @click="is_visible = !is_visible"
         size="sm"
         variant="outline-dark"
         class="mb-2"
-        >{{ title }}</b-btn
       >
-      <b-collapse :id="title + id" :visible="visible" class="mt-2">
-        <slot></slot>
-      </b-collapse>
+        {{ title }}
+        <span v-if="is_visible" class="float-right">
+          <font-awesome-icon icon="chevron-up" />
+        </span>
+        <span v-else>
+          <span v-if="whenClosed">({{ whenClosed }})</span>
+          <span class="float-right">
+            <font-awesome-icon icon="chevron-down" />
+          </span>
+        </span>
+      </b-btn>
     </div>
+    <b-collapse :visible="is_visible" class="text-left">
+      <slot></slot>
+    </b-collapse>
   </div>
 </template>
 
@@ -30,13 +40,11 @@ export default {
   },
   data() {
     return {
-      id: ""
+      is_visible: null
     };
   },
   mounted() {
-    this.id = Math.random()
-      .toString()
-      .substring(1);
+    this.is_visible = this.visible;
   }
 };
 </script>
