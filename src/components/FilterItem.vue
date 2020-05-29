@@ -4,7 +4,7 @@
       <b-btn
         pill
         block
-        v-b-toggle="title"
+        v-b-toggle="title + id"
         size="sm"
         variant="outline-dark"
         class="mb-2"
@@ -19,7 +19,7 @@
         </span>
       </b-btn>
     </div>
-    <b-collapse :visible="visible" :id="title" class="text-left">
+    <b-collapse :visible="visible" :id="title + id" class="text-left">
       <slot></slot>
     </b-collapse>
   </div>
@@ -35,6 +35,16 @@ export default {
       type: Boolean,
       default: false
     }
+  },
+  data() {
+    return {
+      id: ""
+    };
+  },
+  mounted() {
+    this.id = Math.random()
+      .toString()
+      .substring(1);
   }
 };
 </script>
