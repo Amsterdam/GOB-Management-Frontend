@@ -54,7 +54,6 @@
       v-for="filterType in filterTypes"
       :key="filterType.key"
       v-if="filterOptions(filterType.key).length"
-      @mouseover="mouseOver(filterType, filterOptions)"
     >
       <filter-item
         :title="filterType.text"
@@ -84,9 +83,6 @@ export default {
     jobs: Array
   },
   methods: {
-    mouseOver(filterType, filterOptions) {
-      console.log(filterType.key, filterOptions(filterType.key));
-    },
     clearFilter() {
       Object.keys(this.filter).map(key => {
         this.filter[key] = [];
