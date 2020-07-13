@@ -55,7 +55,7 @@ export function filterJobs(jobs, filter) {
                     if (key === MESSAGE_TYPES) {
                         match = values.reduce((s, t) => s + job[t], 0) > 0
                     } else {
-                        const jobDate = new Date(job.starttime)
+                        const jobDate = new Date(job.isoStarttime)
                         const dtElements = {
                             year: jobDate.getFullYear(),
                             month: jobDate.getMonth() + 1,

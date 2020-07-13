@@ -47,7 +47,7 @@ const JobHeader = props => {
     }
 
     const jobDescription = () => {
-        return `${job.name} ${job.catalogue} ${job.entity}`
+        return `${job.name} ${job.catalogue} ${job.entity || ''}`
     }
 
     return (
