@@ -2,6 +2,8 @@ import React from 'react';
 import {Badge} from "react-bootstrap";
 import Moment from "react-moment";
 import JobStatus from "./JobStatus";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const JobHeader = props => {
     const {job} = props;
@@ -18,14 +20,14 @@ const JobHeader = props => {
         return levels
             .filter(level => job[level] > 0)
             .map(level => (
-                    <Badge key={level} className={"ml-2 " + level} variant={"light"}>{level} {job[level]}</Badge>
+                    <Badge key={level} className={"mr-2 " + level} variant={"light"}>{level} {job[level]}</Badge>
                 )
             )
     }
 
     const attribute = () => {
         if (job.attribute) {
-            return <div>{job.attribute}</div>
+            return <span className="small">&nbsp;({job.attribute})</span>
         }
     }
 
@@ -44,23 +46,35 @@ const JobHeader = props => {
         )
     }
 
+    const jobDescription = () => {
+        return `${job.name} ${job.catalogue} ${job.entity}`
+    }
+
     return (
-        <div className="w-100 text-center overflow-hidden">
+        <div className="w-100 overflow-hidden">
             <div>
-                <div className="float-right">
-                    <div className="text-right"><JobStatus job={job}/></div>
-                </div>
-                <div title={props.job.entity}>
-                    {props.job.name}&nbsp;
-                    {props.job.application || props.job.source}&nbsp;
-                    {props.job.catalogue}&nbsp;
-                    {props.job.entity}
-                    {attribute()}
-                    {badges()}
-                    <div>
-                        {timeInfo()}
-                    </div>
-                </div>
+                <Row>
+                    <Col>
+                        <div className="float-left text-left">
+                            {jobDescription()}{attribute()}
+                        </div>
+                        <div className="float-right text-right">
+                            <JobStatus job={job}/>
+                        </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <div>
+                            <div className="float-left text-left">
+                                {badges()}
+                            </div>
+                            <div className="float-right text-right">
+                                {timeInfo()}
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
             </div>
         </div>
     )
