@@ -55,8 +55,8 @@ class JobSummaries extends React.Component {
             (first, job) =>
                 job.catalogue === catalog &&
                 job.name.toLowerCase() === process &&
-                new Date(job.starttime) < first
-                    ? new Date(job.starttime)
+                new Date(job.isoStarttime) < first
+                    ? new Date(job.isoStarttime)
                     : first,
             EOT
         );
@@ -69,8 +69,8 @@ class JobSummaries extends React.Component {
             (last, job) =>
                 job.catalogue === catalog &&
                 job.name.toLowerCase() === process &&
-                new Date(job.endtime) > last
-                    ? new Date(job.endtime)
+                new Date(job.isoEndtime) > last
+                    ? new Date(job.isoEndtime)
                     : last,
             BOT
         );
@@ -145,9 +145,7 @@ class JobSummaries extends React.Component {
                 }
             });
         });
-        this.setState({timeData})
-        this.setState({jobData})
-
+        this.setState({timeData, jobData})
     }
 
     render() {
@@ -186,7 +184,7 @@ class JobSummaries extends React.Component {
                     {this.PROCESSES.map(process => (
                         <Col key={process}>
                             <div>
-                            {pieCharts(process)}
+                                {pieCharts(process)}
                             </div>
                         </Col>
                     ))}

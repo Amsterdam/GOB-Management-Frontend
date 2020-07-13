@@ -153,7 +153,7 @@ export async function createJob(action, catalogue, collection, product, user) {
 function isZombie(job) {
   if (job.status === "started") {
     const runtime = moment
-      .duration(moment(Date.now()).diff(moment(job.starttime)))
+      .duration(moment(Date.now()).diff(moment(job.isoStarttime)))
       .asHours();
     return runtime > 12;
   }
@@ -207,9 +207,11 @@ export async function getJobs(filter) {
     ).toString();
 
     const starttime = new Date(moment.utc(job.starttime));
+    job.isoStarttime = starttime.toISOString()
     job.starttime = moment.utc(job.starttime).tz(TZ).format(format)
 
     const endtime = new Date(moment.utc(job.endtime));
+    job.isoEndtime = job.endtime ? endtime.toISOString() : null;
     job.endtime = moment.utc(job.endtime).tz(TZ).format(format);
 
     job.ago = moment(Date.now()).diff(moment(starttime));
@@ -347,7 +349,7 @@ export async function getJobsSummary(daysAgo) {
   let summary = {};
   let startdates = [
     ...new Set(
-      uniqueValues(jobs, "starttime")
+      uniqueValues(jobs, "isoStarttime")
         .sort((a, b) => (new Date(a) > new Date(b) ? 1 : -1))
         .map(o => formatDate(o))
     )
@@ -371,7 +373,7 @@ export async function getJobsSummary(daysAgo) {
 
   for (let job of jobs.filter(j => j.starttime && j.catalogue && j.name)) {
     let entry =
-      summary[job.catalogue][formatDate(job.starttime)][job.name.toLowerCase()];
+      summary[job.catalogue][formatDate(job.isoStarttime)][job.name.toLowerCase()];
 
     // Only add job if no job exists yet with the same jobId (meaning it is the same type of job)
     // Jobs are in descending chronological order, so we only keep the most recent job of a type per day.
