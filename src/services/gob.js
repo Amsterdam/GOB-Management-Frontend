@@ -11,6 +11,7 @@ import {
   queryLogsForJob,
   queryLogsForJobStep
 } from "../graphql/queries";
+import {TZ} from "./config";
 
 export const catalogOnlyJobs = ["prepare", "export test"];
 export const collectionOptionalJobs = ["relate"];
@@ -22,7 +23,7 @@ export async function sources() {
   );
 }
 
-export async function catalogues() {
+export async function getCatalogs() {
   var data = await querySourceEntities();
   return _.uniq(
     data.sourceEntities
@@ -79,7 +80,7 @@ export async function getJob(id) {
   return jobinfos ? jobinfos[0] : null;
 }
 
-export async function catalogCollections() {
+export async function getCatalogCollections() {
   const result = await get("gob_management/catalogs/");
   if (result.ok) {
     return result.json();
@@ -189,26 +190,7 @@ function getDurationSecs(duration, starttime, endtime) {
   }
 }
 
-// getJobs is an expensive function
-// Therefore cache the result of getJobs during two and a halve minutes
-const MAX_CACHE_AGE = 2.5 * 60 * 1000;
-const JOBS_CACHE = {
-  jobs: null,
-  filter: null,
-  timestamp: null
-};
-
-export async function getJobs(filter, useCache = true) {
-  if (
-    useCache &&
-    JOBS_CACHE.jobs &&
-    JOBS_CACHE.filter === JSON.stringify(filter) &&
-    Date.now() - JOBS_CACHE.timestamp <= MAX_CACHE_AGE
-  ) {
-    // Cached jobs is requested and cached jobs exist and are recent enough
-    return JOBS_CACHE.jobs;
-  }
-
+export async function getJobs(filter) {
   let data = await queryJobs(filter);
 
   let jobs = data.jobs;
@@ -216,31 +198,38 @@ export async function getJobs(filter, useCache = true) {
 
   jobs.forEach(job => {
     // Interpret any UTC date time that is received from the backend in the CET timezone
+    const format = "dddd DD MMM YYYY HH:mm:ss";
+
     job.date = new Date(
       moment(job.day)
-        .tz("CET")
+        .tz(TZ)
         .startOf("day")
-    );
+    ).toString();
 
-    job.starttime = new Date(moment.utc(job.starttime));
-    job.endtime = new Date(moment.utc(job.endtime));
+    const starttime = new Date(moment.utc(job.starttime));
+    job.starttime = moment.utc(job.starttime).tz(TZ).format(format)
 
-    job.ago = moment(Date.now()).diff(moment(job.starttime));
-    job.duration = moment.duration(
-      moment(job.endtime).diff(moment(job.starttime))
+    const endtime = new Date(moment.utc(job.endtime));
+    job.endtime = moment.utc(job.endtime).tz(TZ).format(format);
+
+    job.ago = moment(Date.now()).diff(moment(starttime));
+    const duration = moment.duration(
+      moment(endtime).diff(moment(starttime))
     );
+    job.duration  = duration.format("mm:ss")
+
     job.status =
       job.status === "started" && isZombie(job) ? "zombie" : job.status;
     job.attribute = getJobAttribute(job);
     job.brutoSecs = getDurationSecs(
       job.brutoDuration,
-      job.starttime,
-      job.endtime
+      starttime,
+      endtime
     );
     job.nettoSecs = getDurationSecs(
       job.nettoDuration,
-      job.starttime,
-      job.endtime
+      starttime,
+      endtime
     );
     job.jobId = `${job.name}.${job.source}.${job.application}.${job.catalogue}.${job.entity}.${job.attribute}`;
     if (jobIds[job.jobId]) {
@@ -253,19 +242,16 @@ export async function getJobs(filter, useCache = true) {
       jobIds[job.jobId] = true;
     }
   });
-  JOBS_CACHE.jobs = jobs;
-  JOBS_CACHE.filter = JSON.stringify(filter);
-  JOBS_CACHE.timestamp = Date.now();
   return jobs;
 }
 
 export function jobRunsOnDate(job, date) {
   // Interpret any UTC date time that is received from the backend in the CET timezone
   const startDate = moment(job.starttime)
-    .tz("CET")
+    .tz(TZ)
     .startOf("day");
   const endDate = moment(job.endtime || job.starttime)
-    .tz("CET")
+    .tz(TZ)
     .endOf("day");
   return startDate <= date && date <= endDate;
 }

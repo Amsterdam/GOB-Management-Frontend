@@ -2,67 +2,121 @@
 
 A frontend on the GOB Management API.
 
-Written in Vue.js
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
-## Requirements
+The project uses the [Amsterdam Styled Components](https://github.com/Amsterdam/amsterdam-styled-components) for most of its UI elements. 
+[React-Bootstrap](https://react-bootstrap.github.io/) is used for any remaining styling issues.
 
-- npm >=5
-- node >= 8
-
-## Configuration
-
-Any configuration variables are stored in .env* files in the root directory of the project.
-
-Currently no configuration variables are used.
+Icons are mainly imported from the [Font Awesome](https://github.com/FortAwesome/react-fontawesome) library
 
 ## Dependencies
 
 The [GOB Management API](https://github.com/Amsterdam/GOB-Management) should be up.
 
-## Project setup
-```
-npm install
+# Docker
+
+## Requirements
+
+* docker-compose >= 1.17
+* docker ce >= 18.03
+
+## Run
+
+```bash
+docker-compose build
+docker-compose up &
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
+Open http://localhost:8080 to view it in the browser.
+
+## Tests
+
+```bash
+docker-compose -f .jenkins/test/docker-compose.yml build
+docker-compose -f .jenkins/test/docker-compose.yml run test
 ```
 
-### Compiles and minifies for production
-```
-npm run build
+# Local
+
+## Requirements
+
+- yarn >= 1.21
+- node >= 10
+
+## Initialisation
+
+Install the required libraries:
+
+```bash
+yarn install
 ```
 
-### Lints files
-```
-npm run lint
-```
+## Tests
 
-### Fix lint errors
-```
-npm run lintfix
-```
+Run the tests:
 
-or using a shell script
-```
+```bash
 sh test.sh
 ```
 
+## Available Scripts
 
-### Run your unit tests
+In the project directory, you can run:
 
-unit tests are currently not used.
+### `yarn start`
 
-See issue https://github.com/Amsterdam/GOB-Management-Frontend/issues/125
+Runs the app in the development mode.<br />
+Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
 
-_Tests have been made for all services with a coverage of 100%._
+The page will reload if you make edits.<br />
+You will also see any lint errors in the console.
 
-_All component logic is implemented by means of services._
-_Because components do not contain any logic they are not tested._
-_ 
+### `yarn build`
 
-```
-npm run test:unit
-```
+Builds the app for production to the `build` folder.<br />
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
+The build is minified and the filenames include the hashes.<br />
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `yarn eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+
+### Analyzing the Bundle Size
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+
+### Making a Progressive Web App
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+
+### Advanced Configuration
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+
+### Deployment
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+
+### `yarn build` fails to minify
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
