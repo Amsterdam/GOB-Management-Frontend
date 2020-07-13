@@ -1,4 +1,5 @@
-import VueJwtDecode from "vue-jwt-decode";
+import jwtDecode from 'jwt-decode';
+import {CONNECT_TO_LOCAL_API} from "./config";
 
 const GOB_ADMIN = "gob_adm";
 const GOB_USER = "gob_adm_r";
@@ -30,7 +31,7 @@ const setupKeycloack = () => {
       "check-sso": false, // To enable refresh token
       checkLoginIframe: false // To enable refresh token
     };
-    if (runsLocally()) {
+    if (runsLocally() && CONNECT_TO_LOCAL_API) {
       // Note that login may be activated if needed, localhost is an accepted host for the -acc realm
       console.warn("Local execution, no login required");
     } else {
@@ -72,7 +73,7 @@ const setupKeycloack = () => {
 
   const getUserRoles = () => {
     try {
-      const jwt = VueJwtDecode.decode(keycloak.token);
+      const jwt = jwtDecode(keycloak.token);
       return jwt.realm_access.roles || [];
     } catch (e) {
       return [];
@@ -153,6 +154,7 @@ const setupKeycloack = () => {
     // This should never happen
     console.log("Unexpected: Token expired");
     autoRefreshToken(false);
+    logout()
   };
 
   return {

@@ -29,5 +29,5 @@ export function subscribe(event, cb) {
   "connect_timeout",
   "reconnect_error"
 ].map(e => {
-  subscribe(e, () => console.log("WS EVENT: " + e));
+  return subscribe(e, () => console.log("WS EVENT: " + e));
 });
