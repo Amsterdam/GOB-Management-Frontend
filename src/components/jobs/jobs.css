@@ -1,0 +1,22 @@
+.id {
+    font-weight: bold;
+    padding-right: 15px;
+}
+
+.row-height {
+    height: 80vh;
+}
+
+.left {
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.right {
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.react-calendar__navigation button {
+    min-width: 40px !important;
+}

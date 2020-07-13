@@ -1,11 +1,19 @@
+import {CONNECT_TO_LOCAL_API, ACCEPTANCE_API} from "./config"
+
 export function get_api() {
-  var base = "";
-  if (location.hostname === "localhost") {
-    base = "127.0.0.1:8143";
+  let api;
+  if (CONNECT_TO_LOCAL_API) {
+    var base = "";
+    if (window.location.hostname === "localhost") {
+      base = "127.0.0.1:8143";
+    } else {
+      base = window.location.hostname.replace("iris", "api");
+    }
+    api = `${window.location.protocol}//${base}/`;
   } else {
-    base = location.hostname.replace("iris", "api");
+    api = ACCEPTANCE_API
   }
-  return `${location.protocol}//${base}/`;
+  return api;
 }
 
 export function get_gob_api() {

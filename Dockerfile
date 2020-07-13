@@ -1,8 +1,5 @@
 FROM node:10-jessie
 
-# Use NPMSCRIPT=builddev for local dockers
-ARG NPMSCRIPT=build
-
 MAINTAINER datapunt@amsterdam.nl
 
 EXPOSE 80
@@ -16,12 +13,14 @@ WORKDIR /app
 ENV PATH=./node_modules/.bin/:~/node_modules/.bin/:$PATH
 RUN git config --global url."https://".insteadOf git:// && \
     git config --global url."https://github.com/".insteadOf git@github.com: && \
-    npm --production=false --unsafe-perm install && \
+    yarn install && \
     chmod -R u+x node_modules/.bin/
 
-COPY . /app
+COPY src /app/src
+COPY public /app/public
+COPY default.conf /app
 
-RUN npm run $NPMSCRIPT && cp -r /app/dist/. /var/www/html/
+RUN yarn build && cp -r /app/build/. /var/www/html/
 
 # forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
