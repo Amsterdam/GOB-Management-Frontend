@@ -5,7 +5,6 @@ import {GlobalStyle, ThemeProvider} from '@datapunt/asc-ui'
 import './App.css';
 
 import AppHeader from "./components/common/AppHeader";
-import Auth from "./components/common/Auth";
 import HomePage from "./components/home";
 import StatusPage from "./components/status";
 import ManagementPage from "./components/management";
@@ -23,7 +22,6 @@ class App extends React.Component {
                 <ThemeProvider>
                     <GlobalStyle/>
                     <AppErrorBoundary>
-                        <Auth></Auth>
                         <AppHeader/>
                         <Container>
                             <Switch>
