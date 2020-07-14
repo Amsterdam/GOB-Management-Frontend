@@ -24,6 +24,7 @@ class ManagementPage extends React.Component {
         if (!this.props.catalog) {
             this.props.setCatalog(Object.keys(this.props.catalogCollections)[0])
         }
+        state2history(this.props.history, this.stateVars, this.props)
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
