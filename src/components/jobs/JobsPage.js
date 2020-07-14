@@ -18,6 +18,7 @@ import JobsFilterOverview from "./JobsFilterOverview";
 import {Link} from "react-router-dom";
 import {getSearch, saveToUrl} from "../../services/state2url";
 import InfiniteScroll from 'react-infinite-scroller';
+import JobsShortcuts from "./JobsShortcuts";
 
 class JobsPage extends React.Component {
     state = {
@@ -168,6 +169,7 @@ class JobsPage extends React.Component {
                         <Button className="justify-content-center w-100 mb-2" onClick={this.resetFilters}>Reset
                             filters</Button>
                         <Button className="justify-content-center w-100 mb-2" onClick={this.loadJobs}>Refresh</Button>
+                        <JobsShortcuts/>
                         <JobsCalendar jobs={this.props.allJobs}></JobsCalendar>
                         <JobFilters jobs={this.props.allJobs}></JobFilters>
                     </Col>
