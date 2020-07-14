@@ -299,7 +299,7 @@ function padZero(val, length = 2) {
  */
 function formatDate(dtString) {
   let dt = new Date(dtString);
-  return padZero(dt.getDate()) + "-" + padZero(dt.getMonth() + 1);
+  return moment(dt).tz(TZ).format("dd DD-MM")
 }
 
 /**
