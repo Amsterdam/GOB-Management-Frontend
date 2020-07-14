@@ -1,9 +1,7 @@
 import React from 'react';
 import {connect} from "react-redux";
 
-import {Button} from "@datapunt/asc-ui";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faTimes} from '@fortawesome/free-solid-svg-icons'
+import {FilterTag} from "@datapunt/asc-ui";
 import {setFilter} from "./jobsSlice";
 
 class JobsFilterOverview extends React.Component {
@@ -28,11 +26,10 @@ class JobsFilterOverview extends React.Component {
                 {this.activeFilters().map(([key, values]) => (
                     <span key={key}>
                         {values.map(value => (
-                            <Button className="mr-2 mb-2 small" variant="primaryInverted" key={value}
+                            <FilterTag className="mr-2 mb-2" key={value}
                                     onClick={() => this.closeFilter(key, value)}>
-                                {value}&nbsp;
-                                <FontAwesomeIcon icon={faTimes}/>
-                            </Button>
+                                {value}
+                            </FilterTag>
                         ))}
                     </span>
                 ))}
