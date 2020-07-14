@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import {connect} from "react-redux";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import {connect} from "react-redux";
+import './JobsCalendar.css'
 import {setFilter} from "./jobsSlice";
 
 class JobsCalendar extends Component {
