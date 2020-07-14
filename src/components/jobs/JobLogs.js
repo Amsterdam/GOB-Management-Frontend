@@ -33,7 +33,7 @@ const JobLogs = props => {
     return (
         <div>
             {(job && job.user) && (
-                <div>Gestart door: {job.user}</div>
+                <div>ID: {job.jobid}, gestart door: {job.user}</div>
             )}
             <JobLogFilter levels={levels} filter={filter} onChange={onFilterLevel}></JobLogFilter>
             <JobLogLines logs={logs} filter={filter}/>
