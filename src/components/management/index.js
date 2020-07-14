@@ -1,9 +1,9 @@
 import React from "react";
 import {connect} from "react-redux";
 
-import {setCatalogCollections, setCatalog, setCollections, setAction, setProduct } from "./managementSlice";
+import {setCatalogCollections, setCatalog, setCollections, setAction, setProduct} from "./managementSlice";
 
-import {Card, CardContent, Checkbox, Label, Radio, RadioGroup} from "@datapunt/asc-ui"
+import {Checkbox, Label, Radio, RadioGroup, FormTitle} from "@datapunt/asc-ui"
 
 import {getCatalogCollections} from "./services/jobs";
 import Form from "react-bootstrap/Form";
@@ -24,6 +24,7 @@ class ManagementPage extends React.Component {
         if (!this.props.catalog) {
             this.props.setCatalog(Object.keys(this.props.catalogCollections)[0])
         }
+        state2history(this.props.history, this.stateVars, this.props)
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -43,7 +44,7 @@ class ManagementPage extends React.Component {
     }
 
     setCollection = event => {
-        const { name, checked } = event.target
+        const {name, checked} = event.target
         if (checked) {
             this.props.setCollections([...this.props.collections, name])
         } else {
@@ -104,28 +105,26 @@ class ManagementPage extends React.Component {
 
         return (
             <div>
-                <h1 className={"text-center"}>Nieuwe job starten</h1>
-                <Card>
-                    <CardContent>
-                        <Form>
-                            <Form.Group className="w-50">
-                                <Form.Label className="font-weight-bold">Catalog</Form.Label>
-                                {catalogs()}
-                            </Form.Group>
-                            <Form.Group>
-                                <Form.Label className="font-weight-bold">Collections</Form.Label>
-                                {collections()}
-                            </Form.Group>
-                            <Form.Group>
-                                <Form.Label className="font-weight-bold">Actions</Form.Label>
-                                {actions()}
-                            </Form.Group>
-                            <Form.Group>
-                                <JobStart title={"Start"}/>
-                            </Form.Group>
-                        </Form>
-                    </CardContent>
-                </Card>
+                <FormTitle>
+                    Nieuwe job starten
+                </FormTitle>
+                <Form>
+                    <Form.Group className="w-50">
+                        <Form.Label className="font-weight-bold">Catalog</Form.Label>
+                        {catalogs()}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label className="font-weight-bold">Collections</Form.Label>
+                        {collections()}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label className="font-weight-bold">Actions</Form.Label>
+                        {actions()}
+                    </Form.Group>
+                    <Form.Group>
+                        <JobStart title={"Start"}/>
+                    </Form.Group>
+                </Form>
             </div>
         )
     }

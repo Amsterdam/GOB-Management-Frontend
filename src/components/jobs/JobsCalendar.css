@@ -1,0 +1,7 @@
+.react-calendar__navigation button {
+    min-width: 30px;
+}
+
+.react-calendar__month-view__days__day--weekend {
+    color: #757575;
+}

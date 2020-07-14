@@ -6,8 +6,8 @@ import {setFilter} from "./jobsSlice";
 class JobsShortcuts extends React.Component {
 
     shortcuts = {
-        'Lopende jobs': {
-            execution: ['lopende']
+        'Lopende & recente jobs': {
+            execution: ['lopende', 'recentste']
         },
         'Recente errors': {
             execution: ['recentste'],
