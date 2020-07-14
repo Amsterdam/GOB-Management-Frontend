@@ -24,11 +24,9 @@ class LeadTimes extends React.Component {
     }
 
     componentDidMount = async () => {
-        if (!this.props.jobsSummary) {
-            let summary = await getJobsSummary();
-            this.props.setJobsSummary(summary)
+        if (this.props.jobsSummary) {
+            this.loadData()
         }
-        this.loadData()
     }
 
     loadData = async () => {
@@ -110,31 +108,37 @@ class LeadTimes extends React.Component {
     }
 
     render() {
+        const hasData = this.state.chartData && this.props.catalog
+
         const chart = () => {
-            if (this.state.chartData && this.props.catalog) {
+            if (hasData) {
                 const data = this.state.chartData[this.props.catalog][this.props.brutoNetto]
                 const options = this.state.chartOptions
                 return (
-                    <Chart
-                        chartType="Line"
-                        data={data}
-                        options={options}
+                    <Chart chartType="Line"
+                           loader={<div>Loading Chart</div>}
+                           data={data}
+                           options={options}
                     />)
+            } else {
+                return (<div>Geen data gevonden</div>)
             }
         }
 
         const radios = () => {
-            return (
-                <RadioGroup horizontal onChange={this.setBrutoNetto}>
-                    {[BRUTO, NETTO].map(value => (
-                        <Label label={value} key={value}>
-                            <Radio variant="primary"
-                                   id={value} name={value} value={value}
-                                   checked={this.props.brutoNetto === value}/>
-                        </Label>
-                    ))}
-                </RadioGroup>
-            )
+            if (hasData) {
+                return (
+                    <RadioGroup horizontal onChange={this.setBrutoNetto}>
+                        {[BRUTO, NETTO].map(value => (
+                            <Label label={value} key={value}>
+                                <Radio variant="primary"
+                                       id={value} name={value} value={value}
+                                       checked={this.props.brutoNetto === value}/>
+                            </Label>
+                        ))}
+                    </RadioGroup>
+                )
+            }
         }
 
         return (

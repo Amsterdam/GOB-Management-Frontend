@@ -243,6 +243,11 @@ export async function getJobs(filter) {
       job.execution = "recentste";
       jobIds[job.jobId] = true;
     }
+
+    job.description = `${job.name} ${job.catalogue} ${job.entity || ''}`
+    if (job.attribute) {
+      job.description += ` (${job.attribute})`
+    }
   });
   return jobs;
 }
@@ -269,24 +274,6 @@ export async function getQueues() {
   } else {
     return [];
   }
-}
-
-/**
- * Example:
- * padZero(2, 3) => 002
- * padZero(2, 1) => 2
- * padZero(2, 5) => 00002
- *
- * @param val
- * @param length
- * @returns {string}
- */
-function padZero(val, length = 2) {
-  val += "";
-  while (val.length < length) {
-    val = "0" + val;
-  }
-  return val;
 }
 
 /**
@@ -343,9 +330,7 @@ function uniqueValues(listOfObjects, key) {
  *     ...
  * }
  */
-export async function getJobsSummary(daysAgo) {
-  let jobs = await getJobs({ daysAgo: daysAgo || 7 });
-
+export async function getJobsSummary(jobs) {
   let summary = {};
   let startdates = [
     ...new Set(
