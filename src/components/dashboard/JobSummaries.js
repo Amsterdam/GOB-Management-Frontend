@@ -207,7 +207,7 @@ class JobSummaries extends React.Component {
             let query = {
                 catalogue: this.props.catalog,
                 execution: "recentste",
-                name: row[0]
+                name: row[0].replace("_", " ")
             };
             const redirect = "/jobs/?" + new URLSearchParams(query)
             this.props.history.push(redirect)
