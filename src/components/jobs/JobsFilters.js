@@ -21,14 +21,22 @@ class JobFilters extends React.Component {
     }
 
     filterOptions = key => {
-        const options = this.props.jobs
-            .filter(job => (key === "entity" ? !["rel"].includes(job.catalogue) : true))
-            .map(job => job[key])
-            .concat(this.props.filter[key])
-            .filter(k => k)
-            .map(k => filterName(k))
-            .sort()
-        return _.uniq(options)
+        /**
+         * The filter options are either the possible values as they exist in the jobs collection
+         * or the messageTypes key if the option is about message types (infos, errors, warnings, ...)
+         */
+        if (key === MESSAGE_TYPES) {
+            return messageTypes.map(v => v.key)
+        } else {
+            const options = this.props.jobs
+                .filter(job => (key === "entity" ? !["rel"].includes(job.catalogue) : true))
+                .map(job => job[key])
+                .concat(this.props.filter[key])
+                .filter(k => k)
+                .map(k => filterName(k))
+                .sort()
+            return _.uniq(options)
+        }
     }
 
     toggleFilterOption = (filterType, filterOption) => {
@@ -57,29 +65,15 @@ class JobFilters extends React.Component {
     render() {
         return (
             <div>
-                <div className="mb-2">
-                    <Accordion isOpen={true} id={MESSAGE_TYPES} title={"Type meldingen"}>
-                        <FormGroup>
-                            {messageTypes.map(({text, key}) => (
-                                <FormCheck key={key}
-                                           name={text}
-                                           label={text}
-                                           checked={(this.props.filter.messageTypes || []).includes(key)}
-                                           onChange={() => this.toggleFilterOption(MESSAGE_TYPES, key)}
-                                />
-                            ))}
-                        </FormGroup>
-                    </Accordion>
-                </div>
-
                 {this.activeFilters().map(filterType => (
-                    <div key={filterType.key} className="mb-2">
-                        <Accordion isOpen={true} key={filterType.key} id={filterType.key} title={filterType.text}>
+                    <div key={filterType.key} className="mb-2 overflow-hidden">
+                        <Accordion isOpen={filterType.defaultOpen} key={filterType.key} id={filterType.key} title={filterType.text}>
                             <FormGroup>
                                 {filterType.options.map(filterOption => (
                                     <FormCheck key={filterOption}
                                                name={filterOption}
                                                label={filterOption}
+                                               title={filterOption}
                                                checked={this.props.filter[filterType.key].includes(filterOption)}
                                                onChange={() => this.toggleFilterOption(filterType.key, filterOption)}
                                     />

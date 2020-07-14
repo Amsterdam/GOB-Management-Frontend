@@ -3,13 +3,16 @@ import {getJobs} from "../../../services/gob";
 export const MESSAGE_TYPES = "messageTypes"
 
 export const filterTypes = [
-    {text: "Status", key: "status"},
-    {text: "Verwerking", key: "execution"},
-    {text: "Leeftijd", key: "ageCategory"},
-    {text: "Type verwerking", key: "name"},
-    {text: "Registraties", key: "catalogue"},
-    {text: "Entiteiten", key: "entity"},
-    {text: "Attributen", key: "attribute"}
+    {text: "Verwerking", key: "execution", defaultOpen: true},
+    {text: "Type melding", key: MESSAGE_TYPES, defaultOpen: true},
+    {text: "Type verwerking", key: "name", defaultOpen: true},
+    {text: "Registraties", key: "catalogue", defaultOpen: true},
+    {text: "Entiteiten", key: "entity", defaultOpen: false},
+    {text: "Attributen", key: "attribute", defaultOpen: false},
+    {text: "Status", key: "status", defaultOpen: false},
+    {text: "Leeftijd", key: "ageCategory", defaultOpen: false},
+    {text: "Bron", key: "source", defaultOpen: false},
+    {text: "Applicatie", key: "application", defaultOpen: false},
 ]
 
 export const messageTypes = [
