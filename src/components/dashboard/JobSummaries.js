@@ -13,7 +13,7 @@ import {TZ} from "../../services/config";
 import {loadJobs} from "../jobs/services/jobs";
 
 class JobSummaries extends React.Component {
-    EXCLUDE = ["prepare", "data consistency test"]
+    EXCLUDE = ["data consistency test"]
     PROCESSES = defaultOrdering.filter(o => !this.EXCLUDE.includes(o))
 
     state = {
