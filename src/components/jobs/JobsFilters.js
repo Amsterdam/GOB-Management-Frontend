@@ -71,6 +71,7 @@ class JobFilters extends React.Component {
                             <FormGroup>
                                 {filterType.options.map(filterOption => (
                                     <FormCheck key={filterOption}
+                                               id={filterOption}
                                                name={filterOption}
                                                label={filterOption}
                                                title={filterOption}
