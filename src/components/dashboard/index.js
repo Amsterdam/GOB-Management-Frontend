@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import {setCatalogs, setCatalog, setBrutoNetto, setJobsSummary} from "./dashboardSlice";
-import {getCatalogCollections, getCatalogs, getJobs, getJobsSummary} from "../../services/gob";
+import {getCatalogCollections, getJobs, getJobsSummary} from "../../services/gob";
 import Form from "react-bootstrap/Form";
 import {getSearch, saveToUrl} from "../../services/state2url";
 import JobSummaries from "./JobSummaries";

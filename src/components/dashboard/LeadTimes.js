@@ -4,8 +4,7 @@ import {connect} from "react-redux";
 import Chart from "react-google-charts";
 
 import {defaultOrdering} from "./services/dashboard";
-import {setJobsSummary, setBrutoNetto} from "./dashboardSlice";
-import {getJobsSummary} from "../../services/gob";
+import {setBrutoNetto} from "./dashboardSlice";
 import {Label, Radio, RadioGroup} from "@datapunt/asc-ui";
 import {BRUTO, NETTO} from "../dashboard/services/dashboard";
 
@@ -156,7 +155,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    setJobsSummary,
     setBrutoNetto
 }
 
