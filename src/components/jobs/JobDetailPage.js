@@ -13,11 +13,11 @@ import {faTrashAlt} from "@fortawesome/free-solid-svg-icons";
 class JobDetailPage extends React.Component {
     state = {
         jobId: null,
-        job: {},
+        job: null,
         jobInfo: {
             steps: []
         },
-        loading: false
+        loading: true
     }
 
     componentDidMount = async () => {

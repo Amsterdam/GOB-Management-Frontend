@@ -214,11 +214,11 @@ export async function getJobs(filter) {
     job.isoEndtime = job.endtime ? endtime.toISOString() : null;
     job.endtime = moment.utc(job.endtime).tz(TZ).format(format);
 
-    job.ago = moment(Date.now()).diff(moment(starttime));
+    job.ago = moment().diff(moment(starttime));
     const duration = moment.duration(
       moment(endtime).diff(moment(starttime))
     );
-    job.duration  = duration.format("mm:ss")
+    job.duration  = duration.humanize()
 
     job.status =
       job.status === "started" && isZombie(job) ? "zombie" : job.status;
@@ -244,7 +244,7 @@ export async function getJobs(filter) {
       jobIds[job.jobId] = true;
     }
 
-    job.description = `${job.name} ${job.catalogue} ${job.entity || ''}`
+    job.description = `${job.name} ${job.catalogue || ''} ${job.entity || ''}`
     if (job.attribute) {
       job.description += ` (${job.attribute})`
     }

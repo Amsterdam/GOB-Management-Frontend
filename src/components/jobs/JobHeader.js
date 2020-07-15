@@ -1,9 +1,9 @@
 import React from 'react';
 import {Badge} from "react-bootstrap";
-import Moment from "react-moment";
 import JobStatus from "./JobStatus";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import moment from 'moment';
 
 const JobHeader = props => {
     const {job} = props;
@@ -36,7 +36,7 @@ const JobHeader = props => {
         if (job.brutoDuration) {
             duration = <span>{job.brutoDuration} / {job.nettoDuration}</span>
         } else {
-            duration = <span><Moment format={"mm:ss"}>{job.ago}</Moment>...</span>
+            duration = <span>&plusmn;&nbsp;{moment.duration(job.ago).humanize()}...</span>
         }
         return (
             <span>
@@ -47,7 +47,7 @@ const JobHeader = props => {
     }
 
     const jobDescription = () => {
-        return `${job.name} ${job.catalogue} ${job.entity || ''}`
+        return `${job.name} ${job.catalogue || ''} ${job.entity || ''}`
     }
 
     return (
