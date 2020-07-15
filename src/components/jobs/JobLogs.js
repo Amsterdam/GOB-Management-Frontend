@@ -30,11 +30,19 @@ const JobLogs = props => {
         })
     }
 
+    const jobInfo = () => {
+        if (job) {
+            return (
+                <div>
+                    Job: {job.jobid}, gestart door: {job.user || "onbekend"}
+                </div>
+            )
+        }
+    }
+
     return (
         <div>
-            {(job && job.user) && (
-                <div>ID: {job.jobid}, gestart door: {job.user}</div>
-            )}
+            {jobInfo()}
             <JobLogFilter levels={levels} filter={filter} onChange={onFilterLevel}></JobLogFilter>
             <JobLogLines logs={logs} filter={filter}/>
             <JobLogGroupedLines logs={logs} filter={filter}/>
