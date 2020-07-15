@@ -41,7 +41,7 @@ class StatusPage extends React.Component {
             <div className="text-center">
                 <h1>Status</h1>
                 <Row>
-                    <Col>
+                    <Col xs={12} md={8}>
                         <Card>
                             <CardContent>
                                 <StatusOverview services={this.state.services}/>
@@ -49,7 +49,7 @@ class StatusPage extends React.Component {
                         </Card>
                     </Col>
                     <Col>
-                        <Card>
+                        <Card shadow backgroundColor="level2">
                             <CardContent>
                                 <StatusDatabase locks={this.state.locks} queries={this.state.queries}/>
                             </CardContent>
@@ -58,7 +58,11 @@ class StatusPage extends React.Component {
                 </Row>
                 <Row>
                     <Col>
-                        <StatusQueues queues={this.state.queues}/>
+                        <Card>
+                            <CardContent>
+                                <StatusQueues queues={this.state.queues}/>
+                            </CardContent>
+                        </Card>
                     </Col>
                 </Row>
                 <Row>
