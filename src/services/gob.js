@@ -214,11 +214,11 @@ export async function getJobs(filter) {
     job.isoEndtime = job.endtime ? endtime.toISOString() : null;
     job.endtime = moment.utc(job.endtime).tz(TZ).format(format);
 
-    job.ago = moment(Date.now()).diff(moment(starttime));
+    job.ago = moment().diff(moment(starttime));
     const duration = moment.duration(
       moment(endtime).diff(moment(starttime))
     );
-    job.duration  = duration.format("mm:ss")
+    job.duration  = duration.humanize()
 
     job.status =
       job.status === "started" && isZombie(job) ? "zombie" : job.status;
@@ -242,6 +242,11 @@ export async function getJobs(filter) {
       // ended, failed or rejected
       job.execution = "recentste";
       jobIds[job.jobId] = true;
+    }
+
+    job.description = `${job.name} ${job.catalogue || ''} ${job.entity || ''}`
+    if (job.attribute) {
+      job.description += ` (${job.attribute})`
     }
   });
   return jobs;
@@ -272,24 +277,6 @@ export async function getQueues() {
 }
 
 /**
- * Example:
- * padZero(2, 3) => 002
- * padZero(2, 1) => 2
- * padZero(2, 5) => 00002
- *
- * @param val
- * @param length
- * @returns {string}
- */
-function padZero(val, length = 2) {
-  val += "";
-  while (val.length < length) {
-    val = "0" + val;
-  }
-  return val;
-}
-
-/**
  * ISO datetime string to day-month format:
  *
  * 2020-04-20T11:31:25.819Z => 20-04
@@ -299,7 +286,7 @@ function padZero(val, length = 2) {
  */
 function formatDate(dtString) {
   let dt = new Date(dtString);
-  return padZero(dt.getDate()) + "-" + padZero(dt.getMonth() + 1);
+  return moment(dt).tz(TZ).format("dd DD-MM")
 }
 
 /**
@@ -343,9 +330,7 @@ function uniqueValues(listOfObjects, key) {
  *     ...
  * }
  */
-export async function getJobsSummary(daysAgo) {
-  let jobs = await getJobs({ daysAgo: daysAgo || 7 });
-
+export async function getJobsSummary(jobs) {
   let summary = {};
   let startdates = [
     ...new Set(

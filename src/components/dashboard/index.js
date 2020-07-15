@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import {setCatalogs, setCatalog, setBrutoNetto, setJobsSummary} from "./dashboardSlice";
-import {getCatalogs, getJobs, getJobsSummary} from "../../services/gob";
+import {getCatalogCollections, getJobs, getJobsSummary} from "../../services/gob";
 import Form from "react-bootstrap/Form";
 import {getSearch, saveToUrl} from "../../services/state2url";
 import JobSummaries from "./JobSummaries";
@@ -13,7 +13,7 @@ import {BRUTO} from "../dashboard/services/dashboard";
 
 class DashboardPage extends React.Component {
     state = {
-        loading: false
+        loading: true
     }
 
     stateVars = {
@@ -38,14 +38,8 @@ class DashboardPage extends React.Component {
         const loaders = []
         if (this.props.catalogs.length === 0) {
             loaders.push(async () => {
-                let catalogs = await getCatalogs();
-                this.props.setCatalogs(catalogs)
-            })
-        }
-        if (!this.props.jobsSummary) {
-            loaders.push(async () => {
-                const summary = await getJobsSummary();
-                this.props.setJobsSummary(summary)
+                const catalogCollections = await getCatalogCollections()
+                this.props.setCatalogs(Object.keys(catalogCollections))
             })
         }
         if (this.props.allJobs.length === 0) {
@@ -55,6 +49,8 @@ class DashboardPage extends React.Component {
             })
         }
         await Promise.all(loaders.map(loader => loader()))
+        const summary = await getJobsSummary(this.props.allJobs);
+        this.props.setJobsSummary(summary)
         this.loadState()
         this.setState({loading: false})
     }
@@ -101,7 +97,7 @@ class DashboardPage extends React.Component {
         }
 
         const charts = () => {
-            if (catalogsReady) {
+            if (!this.state.loading) {
                 const charts = [<JobSummaries/>, <LastWeek/>, <LeadTimes/>]
                 return (
                     <div className="mb-5">

@@ -12,22 +12,24 @@ const JobLogGroupedLines = props => {
 
     return (
         <div>
-        {msgids.map(id => {
+            {msgids.map(id => {
                 const idlogs = logs.filter(l => l.msgid === id.msgid)
-                const title = `${id.level} (${logs.length})`
+                const title = `${id.level} (${idlogs.length})`
                 return (
-                    <Accordion
-                        key={id.level}
-                        id={id.level}
-                        title={title}>
-                        {idlogs.map(log => (
-                            <div key={log.logid}>
-                                {Object.entries(log.data).map(([key, item]) => (
-                                    <div key={key} className="text-right">{key} : {item} </div>
-                                ))}
-                            </div>
-                        ))}
-                    </Accordion>
+                    <div key={id.msgid} className="mb-2 text-left">
+                        <div>{title}</div>
+                        <Accordion
+                            id={id.msgid}
+                            title={id.msgid}>
+                            {idlogs.map(log => (
+                                <div key={log.logid}>
+                                    {Object.entries(log.data).map(([key, item]) => (
+                                        <div key={key} className="text-right">{key} : {item} </div>
+                                    ))}
+                                </div>
+                            ))}
+                        </Accordion>
+                    </div>
                 )
             })}
         </div>

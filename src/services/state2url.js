@@ -15,20 +15,14 @@ export function getUrlParams(history, vars) {
 }
 
 export function saveToUrl(history, vars) {
-    const current = {}
-    // for (const [key, value] of getSearch(history).entries()) {
-    //     current[key] = value
-    // }
-
     let search = Object.keys(vars)
         .filter(v => vars[v])
         .reduce((obj, v) => ({
             ...obj,
             [v]: vars[v]
-        }), current)
-
+        }), {})
     search = "?" + new URLSearchParams(search)
-    history.push({search})
+    history.replace({search})
 }
 
 export async function history2state(history, stateVars, current) {

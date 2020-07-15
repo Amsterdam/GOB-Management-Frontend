@@ -1,9 +1,8 @@
 import React from 'react'
 import {connect} from "react-redux";
 
-import {getJobsSummary} from "../../services/gob";
 import Chart from "react-google-charts";
-import {setBrutoNetto, setJobsSummary} from "./dashboardSlice";
+import {setBrutoNetto} from "./dashboardSlice";
 import {defaultOrdering} from "./services/dashboard";
 import {withRouter} from "react-router-dom";
 
@@ -22,16 +21,18 @@ class LastWeek extends React.Component {
         convertFunc: null
     }
 
-    componentDidMount = async () => {
-        if (!this.props.jobsSummary) {
-            const summary = await getJobsSummary();
-            this.props.setJobsSummary(summary)
+    componentDidMount = () => {
+        if (this.props.jobsSummary) {
+            this.loadData()
         }
-        await this.loadData()
     }
 
     loadData = async () => {
         const summary = this.props.jobsSummary;
+        if (Object.keys(summary).length === 0) {
+            this.setState({chartData: null})
+            return
+        }
 
         const chartData = {};
         const chartOptions = {};
@@ -98,16 +99,14 @@ class LastWeek extends React.Component {
 
     onSelect = (selection) => {
         // On selection (click) of bar, redirect to Jobs overview
-        if (selection.length) {
-            let date = this.state.chartData[this.props.catalog][
-            selection[0].row + 1
-                ][0];
-            let job = this.state.chartData[this.props.catalog][0][
-                selection[0].column
-                ].replace("_", " "); // Jobs overview expects spaces instead of underscores
-            let [day, month] = date.split("-");
+        if (selection?.length > 0) {
+            const {row, column} = selection[0]
+            const date = this.state.chartData[this.props.catalog][row + 1][0];
+            const job = this.state.chartData[this.props.catalog][0][column]
+                .replace("_", " "); // Jobs overview expects spaces instead of underscores
+            const [day, month] = date.substring(3).split("-");  // "dd DD-MM"
 
-            let query = {
+            const query = {
                 catalogue: this.props.catalog,
                 year: new Date().getFullYear(),
                 day: day,
@@ -196,10 +195,13 @@ class LastWeek extends React.Component {
                 return (
                     <Chart
                         chartType="Bar"
+                        loader={<div>Loading Chart</div>}
                         data={data}
                         options={options}
                         chartEvents={this.chartEvents}
                     />)
+            } else {
+                return (<div>Geen data gevonden</div>)
             }
         }
 
@@ -217,7 +219,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    setJobsSummary,
     setBrutoNetto
 }
 
