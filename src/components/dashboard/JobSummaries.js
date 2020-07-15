@@ -80,6 +80,9 @@ class JobSummaries extends React.Component {
 
     loadCharts = async () => {
         let recentJobs = this.props.allJobs.filter(job => job.execution === "recentste");
+        if (recentJobs.length === 0) {
+            return
+        }
         let catalogs = this.props.catalogs;
 
         const timeData = {}
@@ -237,8 +240,6 @@ class JobSummaries extends React.Component {
                            data={data}
                            options={options}/>
                 )
-            } else {
-                return (<div>Geen data gevonden</div>)
             }
         }
 

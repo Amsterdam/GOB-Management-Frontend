@@ -52,6 +52,10 @@ class LeadTimes extends React.Component {
          */
         const ordering = defaultOrdering;
         const summary = this.props.jobsSummary;
+        if (Object.keys(summary).length === 0) {
+            this.setState({chartData: null})
+            return
+        }
 
         function firstEntry(obj) {
             // Return first entry in object.
