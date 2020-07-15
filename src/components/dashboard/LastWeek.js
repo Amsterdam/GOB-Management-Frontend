@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from "react-redux";
 
 import Chart from "react-google-charts";
-import {setBrutoNetto, setJobsSummary} from "./dashboardSlice";
+import {setBrutoNetto} from "./dashboardSlice";
 import {defaultOrdering} from "./services/dashboard";
 import {withRouter} from "react-router-dom";
 
@@ -215,7 +215,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    setJobsSummary,
     setBrutoNetto
 }
 
