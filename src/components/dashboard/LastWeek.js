@@ -29,6 +29,10 @@ class LastWeek extends React.Component {
 
     loadData = async () => {
         const summary = this.props.jobsSummary;
+        if (Object.keys(summary).length === 0) {
+            this.setState({chartData: null})
+            return
+        }
 
         const chartData = {};
         const chartOptions = {};
