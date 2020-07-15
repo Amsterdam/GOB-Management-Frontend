@@ -174,7 +174,7 @@ class JobSummaries extends React.Component {
                 .map(([t, jt]) => jt ? t.getTime() === new Date(jt).getTime() : false)
                 .map(b => b ? 'class="font-weight-bold"': '')
             const duration =asDuration(job.isoStarttime, job.isoEndtime)
-            return `<tr>
+            return `<tr class="text-nowrap">
                         <td>${job.description}</td>
                         <td ${isStart}>${start}</td>
                         <td ${isEnd}>${end}</td>

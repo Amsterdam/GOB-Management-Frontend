@@ -62,7 +62,7 @@ class StatusIndicator extends React.Component {
         }
 
         return (
-            <div>
+            <div className="statusIndicator">
                 {items.map((item, i) => (
                     <div key={i}>{item}</div>
                 ))}
