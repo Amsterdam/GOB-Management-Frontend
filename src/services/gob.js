@@ -210,15 +210,22 @@ export async function getJobs(filter) {
     job.isoStarttime = starttime.toISOString()
     job.starttime = moment.utc(job.starttime).tz(TZ).format(format)
 
-    const endtime = new Date(moment.utc(job.endtime));
-    job.isoEndtime = job.endtime ? endtime.toISOString() : null;
-    job.endtime = moment.utc(job.endtime).tz(TZ).format(format);
+    let endtime = null;
+    if (job.endtime) {
+      endtime = new Date(moment.utc(job.endtime));
+      job.isoEndtime = job.endtime ? endtime.toISOString() : null;
+      job.endtime = moment.utc(job.endtime).tz(TZ).format(format);
+      const duration = moment.duration(
+          moment(endtime).diff(moment(starttime))
+      );
+      job.duration  = duration.humanize()
+    } else {
+      job.isoEndtime = null;
+      job.endtime = null;
+      job.duration = null;
+    }
 
     job.ago = moment().diff(moment(starttime));
-    const duration = moment.duration(
-      moment(endtime).diff(moment(starttime))
-    );
-    job.duration  = duration.humanize()
 
     job.status =
       job.status === "started" && isZombie(job) ? "zombie" : job.status;
