@@ -28,8 +28,20 @@ class JobFilters extends React.Component {
         if (key === MESSAGE_TYPES) {
             return messageTypes.map(v => v.key)
         } else {
+            /**
+             * Get all possible values for "key" in jobs
+             * But skip certain catalogs and sources for some options (skipForKeys)
+             * This keeps the overview functional and not containing test or technical options
+             */
+            const skipCatalogs = ["qa", "rel", "test_catalogue"]
+            const skipSources = ["GOB", null]
+            const skipForKeys = ["application", "source", "attribute", "entity"]
+
             const options = this.props.jobs
                 .filter(job => (key === "entity" ? !["rel"].includes(job.catalogue) : true))
+                .filter(job => skipForKeys.includes(key)
+                    ? !(skipCatalogs.includes(job.catalogue) || skipSources.includes(job.source))
+                    : true)
                 .map(job => job[key])
                 .concat(this.props.filter[key])
                 .filter(k => k)
