@@ -1,3 +1,11 @@
 .queueRow:nth-child(even) {
     background-color: #f2f2f2;
 }
+
+.overviewColumn {
+    width: 20%;
+}
+
+.statusIndicator {
+    width: 50px;
+}
