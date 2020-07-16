@@ -1,6 +1,6 @@
 import React from "react";
 
-import { getJob, getJobs, deleteJob, logsForJobStep } from "../../services/gob";
+import {getJob, getJobs, deleteJob, logsForJobStep} from "../../services/gob";
 import auth from "../../services/auth";
 import JobHeader from "./JobHeader";
 import JobInfo from "./JobInfo";
@@ -30,7 +30,7 @@ class JobDetailPage extends React.Component {
             step.logs = await logsForJobStep(jobId, step.stepid);
         }
 
-        var jobs = await getJobs({ jobid: jobId });
+        var jobs = await getJobs({jobid: jobId});
         const job = jobs[0];
 
         this.setState({job, jobInfo, loading: false})
@@ -44,13 +44,13 @@ class JobDetailPage extends React.Component {
     }
 
     render() {
-        const { jobId, job, jobInfo, loading } = this.state
+        const {jobId, job, jobInfo, loading} = this.state
 
         const restartJob = () => {
             if (auth.isAdmin()) {
                 return (
                     <div className={"mb-2 mt-2"}>
-                        <JobRestart catalog={job.catalogue} collection={job.entity} action={job.name} />
+                        <JobRestart catalog={job.catalogue} collection={job.entity} action={job.name}/>
                     </div>
                 )
             }
@@ -60,10 +60,10 @@ class JobDetailPage extends React.Component {
             if (auth.isAdmin()) {
                 return (
                     <div align="right">
-                <Button onClick={this.deleteJob}>
-                    <FontAwesomeIcon icon={faTrashAlt} />&nbsp;
-                    Delete job {job.jobid}
-                </Button>
+                        <Button onClick={() => this.deleteJob(job)}>
+                            <FontAwesomeIcon icon={faTrashAlt}/>&nbsp;
+                            Delete job {job.jobid}
+                        </Button>
                     </div>
                 )
             }
@@ -76,7 +76,7 @@ class JobDetailPage extends React.Component {
                 {restartJob()}
                 {jobInfo.steps.map(step => (
                     <div key={step.stepid} className="mb-2">
-                        <JobStep step={step} />
+                        <JobStep step={step}/>
                     </div>
                 ))}
                 {deleteJob()}

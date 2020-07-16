@@ -10,7 +10,7 @@ class JobsShortcuts extends React.Component {
             execution: ['lopende', 'recentste']
         },
         'Recente errors': {
-            execution: ['recentste'],
+            execution: ['lopende', 'recentste'],
             messageTypes: ['errors']
         }
     }

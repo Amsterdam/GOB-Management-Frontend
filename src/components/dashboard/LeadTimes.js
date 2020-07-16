@@ -12,6 +12,7 @@ class LeadTimes extends React.Component {
     state = {
         chartData: null,
         chartOptions: {
+            height: 250,
             axes: {
                 y: {
                     0: {
