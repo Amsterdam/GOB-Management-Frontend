@@ -127,21 +127,27 @@ export async function createJob(action, catalogue, collection, product, user) {
   product = product || null;
   user = user || null;
 
+  const body = {
+    action,
+    catalogue,
+    collection,
+    application: application[collection],
+    destination,
+    product,
+    attribute: product,
+    user
+  }
+
+  if (action === "relate") {
+    body.mode = 'update'
+  }
+
   const requestOptions = {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({
-      action,
-      catalogue,
-      collection,
-      application: application[collection],
-      destination,
-      product,
-      attribute: product,
-      user
-    })
+    body: JSON.stringify(body)
   };
   const result = await get("gob_management/job/", requestOptions);
   return {
