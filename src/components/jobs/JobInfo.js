@@ -12,7 +12,7 @@ const JobInfo = props => {
         type: ["Type", <span>{jobInfo.type}</span>],
         user: ["Gestart door", <span>{jobInfo.user || "onbekend"}</span>],
         start: ["Start", <span>{moment.utc(jobInfo.start).tz(TZ).format(format)}</span>],
-        eind: ["Eind", <span>{moment.utc(jobInfo.end).tz(TZ).format(format)}</span>],
+        eind: ["Eind", <span>{jobInfo.end ? moment.utc(jobInfo.end).tz(TZ).format(format) : ''}</span>],
         duur: ["Duur", <span>{jobInfo.duration}</span>],
         status: ["Status", <span>{jobInfo.status}</span>]
     }
