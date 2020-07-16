@@ -27,15 +27,22 @@ class JobStart extends React.Component {
             canStartJob(this.props.action, this.props.catalog, this.props.collections)
     }
 
-    startJob = async () => {
+    startJob = async event => {
+        event.preventDefault()
         const results = []
         this.setState({results, startingJobs: true})
 
-        for (let collection of this.props.collections) {
-            const result = await startJob(this.props.action, this.props.catalog, collection,
+        if (this.props.collections.length === 0) {
+            const result = await startJob(this.props.action, this.props.catalog, null,
                 this.props.product)
             results.push(result)
-            this.setState({results})
+        } else {
+            for (let collection of this.props.collections) {
+                const result = await startJob(this.props.action, this.props.catalog, collection,
+                    this.props.product)
+                results.push(result)
+                this.setState({results})
+            }
         }
 
         this.setState({startingJobs: false})

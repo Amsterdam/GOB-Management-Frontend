@@ -14,9 +14,6 @@ import {TZ} from "../../services/config";
 import {loadJobs} from "../jobs/services/jobs";
 
 class JobSummaries extends React.Component {
-    EXCLUDE = ["data consistency test"]
-    PROCESSES = defaultOrdering.filter(o => !this.EXCLUDE.includes(o))
-
     state = {
         timeData: null,
         jobData: null,
@@ -34,7 +31,8 @@ class JobSummaries extends React.Component {
             },
             timeline: {
                 legend: "none",
-                showRowLabels: true
+                showRowLabels: true,
+                colorByRowLabel: true
             },
             hAxis: {
                 format: "HH:mm"
@@ -102,7 +100,7 @@ class JobSummaries extends React.Component {
             stats[catalog] = {};
             jobData[catalog] = {};
 
-            this.PROCESSES.forEach(pr => {
+            defaultOrdering.forEach(pr => {
                 // Get begin and end the process
                 const starttime = this.firstProcess(recentJobs, catalog, pr);
                 const endtime = this.lastProcess(recentJobs, catalog, pr);
@@ -263,7 +261,7 @@ class JobSummaries extends React.Component {
         return (
             <div>
                 <Row>
-                    {this.PROCESSES.map(process => (
+                    {defaultOrdering.map(process => (
                         <Col key={process}>
                             <div>
                                 {pieCharts(process)}
