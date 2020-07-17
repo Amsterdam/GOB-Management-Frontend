@@ -50,7 +50,7 @@ class JobDetailPage extends React.Component {
             if (auth.isAdmin()) {
                 return (
                     <div className={"mb-2 mt-2"}>
-                        <JobRestart catalog={job.catalogue} collection={job.entity} action={job.name}/>
+                        <JobRestart catalog={job.catalogue} collection={job.entity} action={jobInfo.type}/>
                     </div>
                 )
             }

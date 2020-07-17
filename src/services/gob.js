@@ -150,10 +150,17 @@ export async function createJob(action, catalogue, collection, product, user) {
     body: JSON.stringify(body)
   };
   const result = await get("gob_management/job/", requestOptions);
-  return {
-    ok: result.ok,
-    text: await result.text()
-  };
+  if (result.ok) {
+    return {
+      ok: result.ok,
+      text: await result.text()
+    };
+  } else {
+    return {
+      ok: false,
+      text: `Start van ${action} mislukt`
+    };
+  }
 }
 
 function isZombie(job) {
