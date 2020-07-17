@@ -65,12 +65,17 @@ class JobSummaries extends React.Component {
     lastProcess(jobs, catalog, process) {
         const BOT = new Date("2000-01-01");
         const last = jobs.reduce(
-            (last, job) =>
-                job.catalogue === catalog &&
-                job.name.toLowerCase() === process &&
-                new Date(job.isoEndtime) > last
-                    ? new Date(job.isoEndtime)
-                    : last,
+            (last, job) => {
+                if (job.catalogue === catalog && job.name.toLowerCase() === process) {
+                    if (job.isoEndtime) {
+                        return new Date(job.isoEndtime) > last ? new Date(job.isoEndtime) : last
+                    } else {
+                        return new Date()
+                    }
+                } else {
+                    return last
+                }
+            },
             BOT
         );
         return last === BOT ? null : last;
@@ -166,12 +171,12 @@ class JobSummaries extends React.Component {
         const duration = asDuration(starttime, endtime)
         const jobRows = jobs.map(job => {
             const [start, end] = [job.isoStarttime, job.isoEndtime]
-                .map(t => moment(t).tz(TZ).format("DD-MM HH:mm"))
+                .map(t => t ? moment(t).tz(TZ).format("DD-MM HH:mm") : job.status)
             // Print the job that started the interval and the job that ended the interval bold
             const [isStart, isEnd] = [[starttime, job.isoStarttime], [endtime, job.isoEndtime]]
-                .map(([t, jt]) => jt ? t.getTime() === new Date(jt).getTime() : false)
+                .map(([t, jt]) => jt ? t.getTime() === new Date(jt).getTime() : true)
                 .map(b => b ? 'class="font-weight-bold"': '')
-            const duration =asDuration(job.isoStarttime, job.isoEndtime)
+            const duration = job.isoEndtime ? asDuration(job.isoStarttime, job.isoEndtime) : ''
             return `<tr class="text-nowrap">
                         <td>${job.description}</td>
                         <td ${isStart}>${start}</td>
