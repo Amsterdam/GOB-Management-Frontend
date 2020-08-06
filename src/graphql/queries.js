@@ -97,6 +97,7 @@ export async function queryJobs(filter = {}) {
       application,
       catalogue,
       entity,
+      attribute,
       starttime,
       endtime,
       infos,

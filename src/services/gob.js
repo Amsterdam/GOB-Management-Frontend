@@ -173,21 +173,6 @@ function isZombie(job) {
   return false;
 }
 
-function getJobAttribute(job) {
-  const processId = job.processId;
-  if (!processId) {
-    return "";
-  }
-  const parts = processId.split(".");
-  const length = parts.length;
-  if (length > 4) {
-    const attribute = parts[length - 1].replace(/_/g, " ");
-    return attribute === job.entity ? "" : attribute;
-  } else {
-    return "";
-  }
-}
-
 function getDurationSecs(duration, starttime, endtime) {
   if (duration) {
     const parts = duration.split(":");
@@ -242,7 +227,6 @@ export async function getJobs(filter) {
 
     job.status =
       job.status === "started" && isZombie(job) ? "zombie" : job.status;
-    job.attribute = getJobAttribute(job);
     job.brutoSecs = getDurationSecs(
       job.brutoDuration,
       starttime,
