@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import {useLocation, useHistory} from 'react-router-dom';
+import {useLocation, useHistory, Link} from 'react-router-dom';
 
 import {Header} from "@datapunt/asc-ui";
 import {MenuButton, MenuInline, MenuItem} from "@datapunt/asc-ui";
 import auth from "../../services/auth";
+import './menu.css'
 
 function AppHeader() {
     const location = useLocation();
@@ -68,10 +69,11 @@ function AppHeader() {
         <MenuInline>
             {Object.entries(menuItems).map(([key, value]) => (
                 <MenuItem key={key}>
-                    <MenuButton onClick={() => go(value)}
-                                active={isActive(value)}>
-                        {key}
-                    </MenuButton>
+                    <Link to={value} className={'menulink'}>
+                        <MenuButton active={isActive(value)}>
+                            {key}
+                        </MenuButton>
+                    </Link>
                 </MenuItem>
             ))}
             <MenuItem key="gebruiker">
