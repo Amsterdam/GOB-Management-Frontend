@@ -18,18 +18,24 @@ const JobHeader = props => {
             'dataerrors'
         ]
 
+        const badge = level =>
+            <Badge key={level} className={"mr-2 " + level} variant={"light"}>
+                {level} {job[level]}
+            </Badge>
+
         const badges = levels
             .filter(level => job[level] > 0)
-            .map(level => (
-                    <Badge key={level} className={"mr-2 " + level} variant={"light"}>{level} {job[level]}</Badge>
-                )
-            );
+            .map(level => badge(level));
 
         if (job['datawarnings'] > 0) {
             // Add datawarnings badge with link to QA CSV for given catalogue/collection
-            const link = get_gob_api() + 'gob/dump/qa/' + job.catalogue + '_' + job.entity + '?format=csv';
-            badges.push(<a href={link} target={'_blank'} rel={'noopener noreferrer'}><Badge key={'datawarnings'} className={'mr-2 datawarnings'} variant={'light'}>datwarnings {job['datawarnings']}</Badge></a>);
+            const link = `${get_gob_api()}gob/dump/qa/${job.catalogue}_${job.entity}?format=csv`;
+            badges.push(
+                <a key={'datawarnings'} href={link} target={'_blank'} rel={'noopener noreferrer'}>
+                    {badge('datawarnings')}
+                </a>);
         }
+
         return badges;
     }
 
