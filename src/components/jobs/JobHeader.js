@@ -4,6 +4,7 @@ import JobStatus from "./JobStatus";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import moment from 'moment';
+import {get_gob_api} from '../../services/api';
 
 const JobHeader = props => {
     const {job} = props;
@@ -14,15 +15,22 @@ const JobHeader = props => {
             'warnings',
             'errors',
             'datainfos',
-            'datawarnings',
             'dataerrors'
         ]
-        return levels
+
+        const badges = levels
             .filter(level => job[level] > 0)
             .map(level => (
                     <Badge key={level} className={"mr-2 " + level} variant={"light"}>{level} {job[level]}</Badge>
                 )
-            )
+            );
+
+        if (job['datawarnings'] > 0) {
+            // Add datawarnings badge with link to QA CSV for given catalogue/collection
+            const link = get_gob_api() + 'gob/dump/qa/' + job.catalogue + '_' + job.entity + '?format=csv';
+            badges.push(<a href={link} target={'_blank'} rel={'noopener noreferrer'}><Badge key={'datawarnings'} className={'mr-2 datawarnings'} variant={'light'}>datwarnings {job['datawarnings']}</Badge></a>);
+        }
+        return badges;
     }
 
     const attribute = () => {
