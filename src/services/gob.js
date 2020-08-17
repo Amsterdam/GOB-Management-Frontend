@@ -237,7 +237,7 @@ export async function getJobs(filter) {
       starttime,
       endtime
     );
-    job.jobId = `${job.name}.${job.source}.${job.application}.${job.catalogue}.${job.entity}.${job.attribute}`;
+    job.jobId = `${job.name}.${job.catalogue}.${job.entity}.${job.attribute}`;
     if (jobIds[job.jobId]) {
       job.execution = "voorgaande";
     } else if (["scheduled", "started"].includes(job.status)) {
