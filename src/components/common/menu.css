@@ -1,3 +1,12 @@
 .menulink:hover {
     text-decoration: none;
 }
+
+.statusicons::before {
+    margin-left: 5px;
+    content: "(";
+}
+
+.statusicons::after {
+    content: ")";
+}
