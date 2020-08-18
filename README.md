@@ -81,6 +81,12 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
+### `yarn test`
+
+Runs the unit tests for the project in watch mode.
+
+The CI tests are specified in test.sh and cover a broader spectrum of tests, including unit tests and coverage tests.
+
 ### `yarn eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
