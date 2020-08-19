@@ -12,9 +12,10 @@ import {connect} from "react-redux";
 import {Input, Button} from "@datapunt/asc-ui";
 
 class JobStart extends React.Component {
+    formatExplain = " (Use only A-Z, a-z, 0-9 and _)"
     productPlaceholders = {
-        Export: "Optionally enter the name of the export file",
-        Relate: "Optionally enter the name of an attribute"
+        Export: "Optionally enter the name of the export file" + this.formatExplain,
+        Relate: "Optionally enter the name of an attribute" + this.formatExplain,
     }
 
     state = {
@@ -49,7 +50,7 @@ class JobStart extends React.Component {
     }
 
     onProduct = (event) => {
-        this.props.setProduct(event.target.value)
+        this.props.setProduct(event.target.value.replace(/[^A-Za-z0-9_]/g, ''));
     }
 
     render() {
