@@ -16,3 +16,12 @@
     height: 100%;
     overflow-y: scroll;
 }
+
+.badgeLink {
+    color: #212529
+}
+
+.badgeLink:hover {
+    color: #212529;
+    text-decoration: none;
+}

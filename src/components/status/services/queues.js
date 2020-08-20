@@ -1,4 +1,5 @@
 import {getQueues as _getQueues, purgeQueue as _purgeQueue} from "../../../services/gob";
+import {memoize} from "../../../services/utils";
 
 const Tooltips = {
     prepare: "Prepare a remote datasource",
@@ -34,6 +35,10 @@ function getOrder(queue) {
     return result < 0 ? 999 : result;
 }
 
+function isJobQueue(queue) {
+    return queue.name.startsWith("gob.workflow")
+}
+
 function std_queue(queue) {
     queue.display = queue.name
         .replace(".queue", "")
@@ -47,11 +52,22 @@ function std_queue(queue) {
     return queue;
 }
 
+// Get new data only if last call is more than 1500 msecs ago
+const memoizeGetQueues = memoize( async () =>{
+    let result = await _getQueues();
+    let queues = result.map(q => std_queue(q)).sort((a, b) => getOrder(a) - getOrder(b))
+    let nJobs = result.filter(q => isJobQueue(q)).reduce((sum, q) => sum += q.messages_unacknowledged, 0)
+    return {queues, nJobs}
+}, 1500)
+
 export async function getQueues() {
-    let queues = await _getQueues();
-    return queues
-        .map(q => std_queue(q))
-        .sort((a, b) => getOrder(a) - getOrder(b));
+    let result = await memoizeGetQueues()
+    return result.queues
+}
+
+export async function getJobs() {
+    let result = await memoizeGetQueues()
+    return result.nJobs
 }
 
 export function purgeQueue(queue) {
