@@ -5,38 +5,49 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import moment from 'moment';
 import {get_gob_api} from '../../services/api';
+import {faDownload} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+
+import './jobs.css'
 
 const JobHeader = props => {
     const {job} = props;
 
+    const badge = (level, link) => {
+        // default badge title is level and number of messages, example: infos 36
+        let title = <span>
+            {level} {job[level]}
+        </span>
+        let tooltip = null
+        if (link) {
+            // for data messages a link is available to download the messages, wrap the title in a hyperlink
+            title = <a className={"badgeLink"} href={link}>
+                {title} <FontAwesomeIcon icon={faDownload} />
+            </a>
+            tooltip = `Download QA messages`
+        }
+        // A click on a badge does not propagate and stops any other action
+        return <Badge key={level} title={tooltip} className={"mr-2 " + level} variant={"light"}
+                      onClick={e => e.stopPropagation()}>
+            {title}
+        </Badge>
+    }
+
     const badges = () => {
-        const levels = [
-            'infos',
-            'warnings',
-            'errors',
-            'datainfos',
-            'dataerrors'
-        ]
+        const dataLink = `${get_gob_api()}gob/dump/qa/${job.catalogue}_${job.entity}?format=csv`;
 
-        const badge = level =>
-            <Badge key={level} className={"mr-2 " + level} variant={"light"}>
-                {level} {job[level]}
-            </Badge>
-
-        const badges = levels
-            .filter(level => job[level] > 0)
-            .map(level => badge(level));
-
-        if (job['datawarnings'] > 0) {
-            // Add datawarnings badge with link to QA CSV for given catalogue/collection
-            const link = `${get_gob_api()}gob/dump/qa/${job.catalogue}_${job.entity}?format=csv`;
-            badges.push(
-                <a key={'datawarnings'} href={link} target={'_blank'} rel={'noopener noreferrer'}>
-                    {badge('datawarnings')}
-                </a>);
+        const levels = {
+            infos: {},
+            warnings: {},
+            errors: {},
+            datainfos: {link: dataLink},
+            datawarnings: {link: dataLink},
+            dataerrors: {link: dataLink}
         }
 
-        return badges;
+        return Object.entries(levels)
+            .filter(([level, data]) => job[level] > 0)
+            .map(([level, data]) => badge(level, data.link));
     }
 
     const attribute = () => {

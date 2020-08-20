@@ -20,7 +20,7 @@ it("should call the GOB API and return the guarded get response for locks", asyn
     expect(locks).toBe(mockGuardedGet)
 })
 
-it("it should call the GOB API and return the guarded get response for queries", async () => {
+it("should call the GOB API and return the guarded get response for queries", async () => {
     const queries = await getDbQueries()
     expect(guardedGet).toHaveBeenCalledWith(`${mockAPI}gob/info/activity`, JSONResponse)
     expect(queries).toBe(mockGuardedGet)
