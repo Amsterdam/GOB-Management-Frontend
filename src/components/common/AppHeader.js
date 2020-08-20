@@ -62,6 +62,17 @@ function AppHeader() {
         }
     }
 
+    function statusIcons(key) {
+        // Optionally add statusIcons (indicators) to menu items
+        const indicators = {
+            Status: ["waiting", "processing", "locks"],
+            Jobs: ["jobs"]
+        }
+        if (indicators[key]) {
+            return <StatusIcons className="statusicons" indicators={indicators[key]}></StatusIcons>
+        }
+    }
+
     const navigation = (
         <MenuInline>
             {Object.entries(menuItems).map(([key, value]) => (
@@ -69,7 +80,7 @@ function AppHeader() {
                     <Link to={value} className={'menulink'}>
                         <MenuButton active={isActive(value)}>
                             {key}
-                            {key === 'Status' ? <StatusIcons className="statusicons"></StatusIcons> : ''}
+                            {statusIcons(key)}
                         </MenuButton>
                     </Link>
                 </MenuItem>

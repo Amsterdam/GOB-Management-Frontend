@@ -7,7 +7,7 @@ import StatusQueues from "./StatusQueues";
 import StatusServices from "./StatusServices";
 import {getServices} from "./services/services";
 import {getQueues} from "./services/queues";
-import {getDbLocks, getDbQueries} from "../../services/gob_api";
+import {getDbLocks, getDbQueries} from "./services/database";
 
 class StatusPage extends React.Component {
     state = {
