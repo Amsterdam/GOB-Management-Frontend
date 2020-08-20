@@ -70,5 +70,7 @@
       }
     }
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "mockdate": "^3.0.2"
+  }
 }
