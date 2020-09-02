@@ -18,6 +18,7 @@ class JobFilters extends React.Component {
                 options: this.filterOptions(filterType.key)
             }))
             .filter(filterType => filterType.options.length > 0)
+            .filter(filterType => !filterType.hidden)
     }
 
     filterOptions = key => {

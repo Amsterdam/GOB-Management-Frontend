@@ -42,14 +42,14 @@ class DashboardPage extends React.Component {
                 this.props.setCatalogs(Object.keys(catalogCollections))
             })
         }
-        if (this.props.allJobs.length === 0) {
+        if (this.props.allPrimaryJobs.length === 0) {
             loaders.push(async () => {
                 const jobs = await getJobs({daysAgo: 7})
                 this.props.setJobs(jobs)
             })
         }
         await Promise.all(loaders.map(loader => loader()))
-        const summary = await getJobsSummary(this.props.allJobs);
+        const summary = await getJobsSummary(this.props.allPrimaryJobs);
         this.props.setJobsSummary(summary)
         this.loadState()
         this.setState({loading: false})
@@ -129,7 +129,7 @@ class DashboardPage extends React.Component {
 function mapStateToProps(state) {
     return {
         ...state.dashboard,
-        allJobs: state.jobs.allJobs
+        allPrimaryJobs: state.jobs.allPrimaryJobs
     }
 }
 
