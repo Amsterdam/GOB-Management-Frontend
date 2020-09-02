@@ -136,14 +136,20 @@ it("should add jobs to a process", () => {
 
     // Latest end time
     const endTimes = [
-        "456",
-        "457",
-        null
+        ["456", "456"],
+        ["123", "456"],
+        ["457", "457"],
+        [null, null],
+        ["458", null],
+        [null, null],
+        ["123", null],
+        ["500", null],
     ]
-    endTimes.forEach(endtime => {
+    // If one of the jobs is not finished, the process is not finished
+    endTimes.forEach(([endtime, expectation]) => {
         job.rawEndtime = endtime
         result = jobProcess(job, processes)
-        expect(result.endtime).toEqual(endtime)
+        expect(result.endtime).toEqual(expectation)
     })
 
     // Starttime of latest job that has been added
@@ -181,7 +187,7 @@ it("should enrich job info", () => {
         ago: expect.anything(),
         brutoDuration: job.brutoDuration,
         brutoSecs: 20,
-        date: "Wed Oct 05 2011 00:00:00 GMT+0200 (Central European Summer Time)",
+        date: expect.anything(),
         duration: "2 minutes",
         execution: "recentste",
         endtime: "Wednesday 05 Oct 2011 16:50:00",

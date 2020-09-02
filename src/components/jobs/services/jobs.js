@@ -16,15 +16,6 @@ export const filterTypes = [
     {text: "View", key: "aggregateLevel", defaultOpen: false, hidden: true}
 ]
 
-export const messageTypes = [
-    {text: "Info", key: "infos"},
-    {text: "Warning", key: "warnings"},
-    {text: "Error", key: "errors"},
-    {text: "Data Info", key: "datainfos"},
-    {text: "Data Warning", key: "datawarnings"},
-    {text: "Data Error", key: "dataerrors"}
-]
-
 export const aggregationTitles = {
     [AGGREGATE_ON_JOB]: "Jobs",
     [AGGREGATE_ON_PROCESS]: "Processen"
