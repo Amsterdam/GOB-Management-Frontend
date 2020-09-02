@@ -5,7 +5,7 @@ import {setJobs, setCurrentJob, setCurrentProcess, setFilter, addSlice} from "./
 
 import './jobs.css'
 
-import {AGGREGATE_ON_JOB, AGGREGATE_ON_PROCESS, getJobs, logsForJob} from "../../services/gob";
+import {getJobs, logsForJob} from "../../services/gob";
 import {Row, Col, Button as JobButton, DropdownButton, Dropdown} from "react-bootstrap";
 import JobHeader from "./JobHeader";
 import Button from "@datapunt/asc-ui/es/components/Button";
@@ -102,6 +102,7 @@ class JobsPage extends React.Component {
     }
 
     setCurrent = async job => {
+        // Set current Job or Process
         return job.jobs ? this.setCurrentProcess(job.processId) : this.setCurrentJob(job.jobid)
     }
 
@@ -119,7 +120,7 @@ class JobsPage extends React.Component {
         const toggle = this.props.currentProcessId === processId
 
         if (toggle) {
-            this.clearLogs()
+            this.clearLogs()    // Also clear any current job and open logs
             this.props.setCurrentProcess({processId: null})
         } else {
             this.props.setCurrentProcess({processId})
@@ -152,8 +153,7 @@ class JobsPage extends React.Component {
 
         const renderSubJobs = job => {
             if (this.props.currentProcessId === job.processId) {
-                const subJobs = job.jobs || []
-                return subJobs.map(subjob =>
+                return (job.jobs || []).map(subjob =>
                     <div key={subjob.jobid} className="mt-2 mb-2 ml-5">
                         {renderJob(subjob)}
                     </div>)
@@ -205,8 +205,9 @@ class JobsPage extends React.Component {
 
         const viewHeader = () => {
             return <DropdownButton variant="outline-secondary" title={aggregateTitle} className="d-inline-block">
-                <Dropdown.Item onClick={() => this.setView(AGGREGATE_ON_JOB)}>{aggregationTitles.job}</Dropdown.Item>
-                <Dropdown.Item onClick={() => this.setView(AGGREGATE_ON_PROCESS)}>{aggregationTitles.process}</Dropdown.Item>
+                {Object.entries(aggregationTitles).map(([level, title]) =>
+                    <Dropdown.Item key={level} onClick={() => this.setView(level)}>{title}</Dropdown.Item>
+                )}
             </DropdownButton>
         }
 

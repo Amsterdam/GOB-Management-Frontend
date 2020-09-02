@@ -254,6 +254,15 @@ export function enrichJob(job, jobIds) {
 export const AGGREGATE_ON_JOB = "job"
 export const AGGREGATE_ON_PROCESS = "process"
 
+export const messageTypes = [
+  {text: "Info", key: "infos"},
+  {text: "Warning", key: "warnings"},
+  {text: "Error", key: "errors"},
+  {text: "Data Info", key: "datainfos"},
+  {text: "Data Warning", key: "datawarnings"},
+  {text: "Data Error", key: "dataerrors"}
+]
+
 export async function getJobs(filter) {
   const data = await queryJobs(filter);
 
@@ -298,14 +307,8 @@ export function jobProcess(job, processes) {
     "ended"
   ]
 
-  const initCounts = {
-    infos: 0,
-    warnings: 0,
-    errors: 0,
-    datainfos: 0,
-    datawarnings: 0,
-    dataerrors: 0
-  }
+  const initCounts = Object.values(messageTypes)
+      .reduce((obj, messageType) => ({...obj, [messageType.key]: 0}), {})
 
   if (! processes[job.processId]) {
     processes[job.processId] = {
@@ -314,6 +317,7 @@ export function jobProcess(job, processes) {
       ageCategory: '',
       nettoDuration: '0:00:00',
       brutoDuration: '0:00:00',
+      endtime: job.rawEndtime,
       jobs: []
     }
   }
@@ -339,7 +343,11 @@ export function jobProcess(job, processes) {
   // Unique jobid
   process.jobid = `P_${job.jobid}`
   // Latest endtime
-  if (!job.rawEndtime || !process.endtime || (process.endtime && job.rawEndtime > process.endtime)) {
+  if (!job.rawEndtime) {
+    // One job is not finished => process is not finished
+    process.endtime = null
+  } else if (process.endtime && job.rawEndtime > process.endtime) {
+    // Set latest endtime but do not overwrite when one of the jobs has not finished
     process.endtime = job.rawEndtime
   }
   // Starttime of first job of process

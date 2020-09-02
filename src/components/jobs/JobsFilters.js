@@ -8,7 +8,8 @@ import {faHome} from '@fortawesome/free-solid-svg-icons'
 import {Accordion} from "@datapunt/asc-ui";
 import {Button, FormCheck, FormGroup} from "react-bootstrap";
 import {setFilter} from "./jobsSlice";
-import {filterName, MESSAGE_TYPES, filterTypes, messageTypes} from "./services/jobs";
+import {filterName, MESSAGE_TYPES, filterTypes} from "./services/jobs";
+import {messageTypes} from "../../services/gob";
 
 class JobFilters extends React.Component {
     activeFilters = () => {
