@@ -3,11 +3,15 @@ import {connect} from "react-redux";
 
 import {FilterTag} from "@datapunt/asc-ui";
 import {setFilter} from "./jobsSlice";
+import {filterTypes} from "./services/jobs";
+
 
 class JobsFilterOverview extends React.Component {
 
     activeFilters = () => {
-        const skipKeys = ["year", "month", "day"]
+        const skipKeys = ["year", "month", "day"].concat(filterTypes
+            .filter(f => f.hidden)
+            .map(f => f.key))
         return Object.entries(this.props.filter)
             .filter(([key, values]) => !skipKeys.includes(key) && values.length > 0)
     }

@@ -19,7 +19,7 @@ const JobHeader = props => {
             {level} {job[level]}
         </span>
         let tooltip = null
-        if (link) {
+        if (link && !job.jobs) {
             // for data messages a link is available to download the messages, wrap the title in a hyperlink
             title = <a className={"badgeLink"} href={link}>
                 {title} <FontAwesomeIcon icon={faDownload} />
@@ -72,7 +72,11 @@ const JobHeader = props => {
     }
 
     const jobDescription = () => {
-        return `${job.name} ${job.catalogue || ''} ${job.entity || ''}`
+        let description = `${job.name} ${job.catalogue || ''} ${job.entity || ''}`
+        if (job.jobs) {
+            description += ` (${job.jobs.length} job${job.jobs.length > 1 ? 's' : ''})`
+        }
+        return description
     }
 
     return (

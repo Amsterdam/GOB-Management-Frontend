@@ -5,16 +5,6 @@ import {setFilter} from "./jobsSlice";
 
 class JobsShortcuts extends React.Component {
 
-    shortcuts = {
-        'Lopende & recente jobs': {
-            execution: ['lopende', 'recentste']
-        },
-        'Recente errors': {
-            execution: ['lopende', 'recentste'],
-            messageTypes: ['errors']
-        }
-    }
-
     setFilter = filterValues => {
         /**
          * Reset the jobs filter to a filter with only the shortcut items selected.
@@ -31,10 +21,20 @@ class JobsShortcuts extends React.Component {
     }
 
     render() {
+        const shortcuts = {
+            [`Lopende & recente ${this.props.aggregateLevel.toLowerCase()}`]: {
+                execution: ['lopende', 'recentste']
+            },
+            'Recente errors': {
+                execution: ['lopende', 'recentste'],
+                messageTypes: ['errors']
+            }
+        }
+
         return (
             <div>
-                {Object.entries(this.shortcuts).map(([text, filterValues]) =>
-                    <Button className="justify-content-center w-100 mb-2" key={text}
+                {Object.entries(shortcuts).map(([text, filterValues]) =>
+                    <Button className="justify-content-center w-100 mb-2 text-wrap" key={text}
                             onClick={() => this.setFilter(filterValues)}>
                         {text}
                     </Button>

@@ -1,17 +1,17 @@
 import React from "react";
 
 import {connect} from "react-redux";
-import {setJobs, setCurrentJob, setFilter, addSlice} from "./jobsSlice";
+import {setJobs, setCurrentJob, setCurrentProcess, setFilter, addSlice} from "./jobsSlice";
 
 import './jobs.css'
 
-import {getJobs, logsForJob} from "../../services/gob";
-import {Row, Col, Button as JobButton} from "react-bootstrap";
+import {AGGREGATE_ON_JOB, AGGREGATE_ON_PROCESS, getJobs, logsForJob} from "../../services/gob";
+import {Row, Col, Button as JobButton, DropdownButton, Dropdown} from "react-bootstrap";
 import JobHeader from "./JobHeader";
 import Button from "@datapunt/asc-ui/es/components/Button";
 import JobLogs from "./JobLogs";
 import JobFilters from "./JobsFilters";
-import {getState} from "./services/jobs";
+import {aggregationTitles, getState} from "./services/jobs";
 import JobsCalendar from "./JobsCalendar";
 import running from './assets/running.gif'
 import JobsFilterOverview from "./JobsFilterOverview";
@@ -22,19 +22,23 @@ import JobsShortcuts from "./JobsShortcuts";
 
 class JobsPage extends React.Component {
     state = {
-        loading: false
+        loading: false,
+        initializing: false
     }
 
     componentDidMount = async () => {
+        this.setState({initializing: true})
+        await this.loadState();
+
         if (this.props.allJobs.length === 0) {
             await this.loadJobs()
         }
 
-        await this.loadState();
-
         if (this.props.currentJob.jobid && this.props.currentJob.logs.length === 0) {
             this.loadLogs(this.props.currentJob.jobid)
         }
+
+        this.setState({initializing: false})
     }
 
     loadState = async () => {
@@ -42,6 +46,8 @@ class JobsPage extends React.Component {
         for (let [key, value] of getSearch(this.props.history).entries()) {
             if (key === 'jobid') {
                 this.loadLogs(parseInt(value))
+            } else if (key === 'processid') {
+                this.props.setCurrentProcess({processId: value})
             } else {
                 filter[key] = value.split(",")
             }
@@ -88,6 +94,17 @@ class JobsPage extends React.Component {
         this.props.setFilter(filter)
     }
 
+    setView = aggregateLevel => {
+        this.props.setFilter({
+            ...this.props.filter,
+            aggregateLevel: [aggregateLevel]
+        })
+    }
+
+    setCurrent = async job => {
+        return job.jobs ? this.setCurrentProcess(job.processId) : this.setCurrentJob(job.jobid)
+    }
+
     setCurrentJob = async jobid => {
         const toggle = this.props.currentJob.jobid === jobid
 
@@ -98,28 +115,57 @@ class JobsPage extends React.Component {
         }
     }
 
+    setCurrentProcess = async processId => {
+        const toggle = this.props.currentProcessId === processId
+
+        if (toggle) {
+            this.clearLogs()
+            this.props.setCurrentProcess({processId: null})
+        } else {
+            this.props.setCurrentProcess({processId})
+        }
+    }
+
     render() {
         const selectedJobs = this.props.filteredJobs;
+        const aggregateLevel = this.props.filter.aggregateLevel[0]
+        const aggregateTitle = aggregationTitles[aggregateLevel]
 
         const loading = () => {
-            if (this.state.loading) {
+            if (this.state.loading || this.state.initializing) {
                 return (
                     <img src={running} alt="loading" height="20px" className={"ml-2"}/>
                 )
             }
+        }
 
+        const renderJob = job => {
+            return <div>
+                <JobButton variant="outline-secondary" className="w-100" onClick={() => this.setCurrent(job)}>
+                    <div className="w-100 p-1">
+                        <JobHeader job={job}/>
+                    </div>
+                </JobButton>
+                {jobLogs(job)}
+            </div>
+        }
+
+        const renderSubJobs = job => {
+            if (this.props.currentProcessId === job.processId) {
+                const subJobs = job.jobs || []
+                return subJobs.map(subjob =>
+                    <div key={subjob.jobid} className="mt-2 mb-2 ml-5">
+                        {renderJob(subjob)}
+                    </div>)
+            }
         }
 
         const renderJobs = () => {
             if (this.props.filteredSlice.length > 0) {
                 const items = this.props.filteredSlice.map(job => (
                     <div key={job.jobid} className="mb-2">
-                        <JobButton variant="outline-secondary" className="w-100" onClick={() => this.setCurrentJob(job.jobid)}>
-                            <div className="w-100 p-1">
-                                <JobHeader job={job}/>
-                            </div>
-                        </JobButton>
-                        {jobLogs(job)}
+                        {renderJob(job)}
+                        {renderSubJobs(job)}
                     </div>
                 ))
                 return (
@@ -147,7 +193,7 @@ class JobsPage extends React.Component {
         }
 
         const noData = () => {
-            if (selectedJobs.length === 0 && !this.state.loading) {
+            if (selectedJobs.length === 0 && !this.state.initializing) {
                 return (
                     <div className="text-center">
                         <h3>Geen resultaten gevonden</h3>
@@ -157,11 +203,18 @@ class JobsPage extends React.Component {
             }
         }
 
+        const viewHeader = () => {
+            return <DropdownButton variant="outline-secondary" title={aggregateTitle} className="d-inline-block">
+                <Dropdown.Item onClick={() => this.setView(AGGREGATE_ON_JOB)}>{aggregationTitles.job}</Dropdown.Item>
+                <Dropdown.Item onClick={() => this.setView(AGGREGATE_ON_PROCESS)}>{aggregationTitles.process}</Dropdown.Item>
+            </DropdownButton>
+        }
+
         return (
             <div>
                 <span className="float-right small">({selectedJobs.length})</span>
                 <h1 className="text-center">
-                    Jobs
+                    {viewHeader()}
                     {loading()}
                 </h1>
                 <Row className="mt-2">
@@ -169,7 +222,7 @@ class JobsPage extends React.Component {
                         <Button className="justify-content-center w-100 mb-2" onClick={this.resetFilters}>Reset
                             filters</Button>
                         <Button className="justify-content-center w-100 mb-2" onClick={this.loadJobs}>Refresh</Button>
-                        <JobsShortcuts/>
+                        <JobsShortcuts aggregateLevel={aggregateTitle}/>
                         <JobsCalendar jobs={this.props.allJobs}></JobsCalendar>
                         <JobFilters jobs={this.props.allJobs}></JobFilters>
                     </Col>
@@ -192,6 +245,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     setJobs,
     setCurrentJob,
+    setCurrentProcess,
     setFilter,
     addSlice
 }
