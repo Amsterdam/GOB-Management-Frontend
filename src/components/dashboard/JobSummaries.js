@@ -12,6 +12,7 @@ import {defaultOrdering} from "./services/dashboard";
 import {Col, Row} from "react-bootstrap";
 import {TZ} from "../../services/config";
 import {loadJobs} from "../jobs/services/jobs";
+import {AGGREGATE_ON_JOB} from "../../services/gob";
 
 class JobSummaries extends React.Component {
     state = {
@@ -211,6 +212,7 @@ class JobSummaries extends React.Component {
             const rowNum = selection[0].row
             const row = this.state.timeData[this.props.catalog][rowNum + 1] // Skip header row
             let query = {
+                aggregateLevel: AGGREGATE_ON_JOB,
                 catalogue: this.props.catalog,
                 execution: "recentste",
                 name: row[0].replace("_", " ")
