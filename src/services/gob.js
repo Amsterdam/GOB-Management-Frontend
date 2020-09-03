@@ -198,16 +198,16 @@ export function enrichJob(job, jobIds) {
           .startOf("day")
   ).toString();
 
-  const jobStarttime = job.rawStarttime || job.starttime
-  const starttime = new Date(moment.utc(jobStarttime));
-  job.rawStarttime = jobStarttime
+  job.rawStarttime = job.rawStarttime || job.starttime
+  const starttime = new Date(moment.utc(job.rawStarttime));
   job.isoStarttime = starttime.toISOString()
-  job.starttime = moment.utc(jobStarttime).tz(TZ).format(format)
+  job.starttime = moment.utc(job.rawStarttime).tz(TZ).format(format)
 
-  const endtime = job.endtime && new Date(moment.utc(job.endtime));
-  job.rawEndtime = job.endtime
+  // Take original endtime (rawEndtime) or endtime (single job)
+  job.rawEndtime = job.endtime ? job.rawEndtime || job.endtime : null
+  const endtime = job.rawEndtime && new Date(moment.utc(job.rawEndtime));
   if (endtime) {
-    job.isoEndtime = job.endtime ? endtime.toISOString() : null;
+    job.isoEndtime = endtime.toISOString();
     job.endtime = moment.utc(job.endtime).tz(TZ).format(format);
     const duration = moment.duration(
         moment(endtime).diff(moment(starttime))
@@ -317,7 +317,8 @@ export function jobProcess(job, processes) {
       ageCategory: '',
       nettoDuration: '0:00:00',
       brutoDuration: '0:00:00',
-      endtime: job.rawEndtime,
+      rawEndtime: job.rawEndtime,
+      rawStarttime: job.rawStarttime,
       jobs: []
     }
   }
@@ -345,13 +346,16 @@ export function jobProcess(job, processes) {
   // Latest endtime
   if (!job.rawEndtime) {
     // One job is not finished => process is not finished
-    process.endtime = null
-  } else if (process.endtime && job.rawEndtime > process.endtime) {
+    process.rawEndtime = null
+  } else if (process.rawEndtime && job.rawEndtime > process.rawEndtime) {
     // Set latest endtime but do not overwrite when one of the jobs has not finished
-    process.endtime = job.rawEndtime
+    process.rawEndtime = job.rawEndtime
   }
   // Starttime of first job of process
-  process.starttime = job.rawStarttime
+  process.rawStarttime = job.rawStarttime
+  // Set as original start/end values
+  process.starttime = process.rawStarttime
+  process.endtime = process.rawEndtime
   // Set to most pessimistic status
   const jobStatusses = process.jobs.map(job => job.status)
   process.status = null

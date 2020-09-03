@@ -64,7 +64,6 @@ it("should add jobs to a process", () => {
         "datainfos": 2,
         "datawarnings": 3,
         "day": "any day",
-        "endtime": "123",
         "entity": "any entity",
         "errors": 4,
         "infos": 5,
@@ -75,6 +74,9 @@ it("should add jobs to a process", () => {
         "processId": "any process id",
         "source": "any source",
         "starttime": "100",
+        "endtime": "123",
+        "rawStarttime": "100",
+        "rawEndtime": "123",
         "status": null,
         "user": "any user",
         "warnings": 6
@@ -91,7 +93,6 @@ it("should add jobs to a process", () => {
         "datainfos": 4,
         "datawarnings": 6,
         "day": "any day",
-        "endtime": "123",
         "entity": "any entity",
         "errors": 8,
         "infos": 10,
@@ -102,6 +103,9 @@ it("should add jobs to a process", () => {
         "processId": "any process id",
         "source": "any source",
         "starttime": "100",
+        "endtime": "123",
+        "rawStarttime": "100",
+        "rawEndtime": "123",
         "status": null,
         "user": "any user",
         "warnings": 12
@@ -149,7 +153,7 @@ it("should add jobs to a process", () => {
     endTimes.forEach(([endtime, expectation]) => {
         job.rawEndtime = endtime
         result = jobProcess(job, processes)
-        expect(result.endtime).toEqual(expectation)
+        expect(result.rawEndtime).toEqual(expectation)
     })
 
     // Starttime of latest job that has been added
@@ -162,7 +166,7 @@ it("should add jobs to a process", () => {
     startTimes.forEach(starttime => {
         job.rawStarttime = starttime
         result = jobProcess(job, processes)
-        expect(result.starttime).toEqual(starttime)
+        expect(result.rawStarttime).toEqual(starttime)
     })
 })
 
