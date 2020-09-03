@@ -188,72 +188,186 @@ function getDurationSecs(duration, starttime, endtime) {
   }
 }
 
-export async function getJobs(filter) {
-  let data = await queryJobs(filter);
+export function enrichJob(job, jobIds) {
+  // Interpret any UTC date time that is received from the backend in the CET timezone
+  const format = "dddd DD MMM YYYY HH:mm:ss";
 
-  let jobs = data.jobs;
-  let jobIds = {};
-
-  jobs.forEach(job => {
-    // Interpret any UTC date time that is received from the backend in the CET timezone
-    const format = "dddd DD MMM YYYY HH:mm:ss";
-
-    job.date = new Date(
+  job.date = new Date(
       moment(job.day)
-        .tz(TZ)
-        .startOf("day")
-    ).toString();
+          .tz(TZ)
+          .startOf("day")
+  ).toString();
 
-    const starttime = new Date(moment.utc(job.starttime));
-    job.isoStarttime = starttime.toISOString()
-    job.starttime = moment.utc(job.starttime).tz(TZ).format(format)
+  const jobStarttime = job.rawStarttime || job.starttime
+  const starttime = new Date(moment.utc(jobStarttime));
+  job.rawStarttime = jobStarttime
+  job.isoStarttime = starttime.toISOString()
+  job.starttime = moment.utc(jobStarttime).tz(TZ).format(format)
 
-    let endtime = null;
-    if (job.endtime) {
-      endtime = new Date(moment.utc(job.endtime));
-      job.isoEndtime = job.endtime ? endtime.toISOString() : null;
-      job.endtime = moment.utc(job.endtime).tz(TZ).format(format);
-      const duration = moment.duration(
-          moment(endtime).diff(moment(starttime))
-      );
-      job.duration  = duration.humanize()
-    } else {
-      job.isoEndtime = null;
-      job.endtime = null;
-      job.duration = null;
-    }
+  const endtime = job.endtime && new Date(moment.utc(job.endtime));
+  job.rawEndtime = job.endtime
+  if (endtime) {
+    job.isoEndtime = job.endtime ? endtime.toISOString() : null;
+    job.endtime = moment.utc(job.endtime).tz(TZ).format(format);
+    const duration = moment.duration(
+        moment(endtime).diff(moment(starttime))
+    );
+    job.duration = duration.humanize()
+  } else {
+    job.isoEndtime = null;
+    job.endtime = null;
+    job.duration = null;
+  }
 
-    job.ago = moment().diff(moment(starttime));
+  job.ago = moment().diff(moment(starttime));
 
-    job.status =
+  job.status =
       job.status === "started" && isZombie(job) ? "zombie" : job.status;
-    job.brutoSecs = getDurationSecs(
+  job.brutoSecs = getDurationSecs(
       job.brutoDuration,
       starttime,
       endtime
-    );
-    job.nettoSecs = getDurationSecs(
+  );
+  job.nettoSecs = getDurationSecs(
       job.nettoDuration,
       starttime,
       endtime
-    );
-    job.jobId = `${job.name}.${job.catalogue}.${job.entity}.${job.attribute}`;
-    if (jobIds[job.jobId]) {
-      job.execution = "voorgaande";
-    } else if (["scheduled", "started"].includes(job.status)) {
-      job.execution = "lopende";
-    } else {
-      // ended, failed or rejected
-      job.execution = "recentste";
-      jobIds[job.jobId] = true;
-    }
+  );
+  job.jobId = `${job.name}.${job.catalogue}.${job.entity}.${job.attribute}`;
+  if (jobIds[job.jobId]) {
+    job.execution = "voorgaande";
+  } else if (["scheduled", "started"].includes(job.status)) {
+    job.execution = "lopende";
+  } else {
+    // ended, failed or rejected
+    job.execution = "recentste";
+    jobIds[job.jobId] = true;
+  }
 
-    job.description = `${job.name} ${job.catalogue || ''} ${job.entity || ''}`
-    if (job.attribute) {
-      job.description += ` (${job.attribute})`
+  job.description = `${job.name} ${job.catalogue || ''} ${job.entity || ''}`
+  if (job.attribute) {
+    job.description += ` (${job.attribute})`
+  }
+  return job
+}
+
+export const AGGREGATE_ON_JOB = "job"
+export const AGGREGATE_ON_PROCESS = "process"
+
+export const messageTypes = [
+  {text: "Info", key: "infos"},
+  {text: "Warning", key: "warnings"},
+  {text: "Error", key: "errors"},
+  {text: "Data Info", key: "datainfos"},
+  {text: "Data Warning", key: "datawarnings"},
+  {text: "Data Error", key: "dataerrors"}
+]
+
+export async function getJobs(filter) {
+  const data = await queryJobs(filter);
+
+  const jobs = data.jobs;
+  const processes = {}    // Derive processes from jobs
+
+  // Track instances of jobs and processes (to set recentste, voorgaande, etcetera)
+  const jobIds = {};
+  const processIds = {}
+
+  const result = [];
+  jobs.forEach(job => {
+    enrichJob(job, jobIds);
+    job.aggregateLevel = AGGREGATE_ON_JOB
+
+    const process = jobProcess(job, processes)
+    process.aggregateLevel = AGGREGATE_ON_PROCESS
+    if (process.jobs.length === 1) {
+      // New process, add to result set before first job of the process
+      result.push(process)
     }
+    // A process is just a job with subjobs, treat as a job
+    enrichJob(process, processIds)
+
+    result.push(job)
   });
-  return jobs;
+  return result
+}
+
+export function addDurations(duration1, duration2) {
+  const seconds = moment.duration(duration1).asSeconds() + moment.duration(duration2).asSeconds()
+  const hours = Math.floor(seconds / 3600)
+  return `${hours}:${new Date(1000 * seconds).toISOString().substr(14, 5)}`
+}
+
+export function jobProcess(job, processes) {
+  const statusses = [
+    "rejected",
+    "failed",
+    "scheduled",
+    "started",
+    "ended"
+  ]
+
+  const initCounts = Object.values(messageTypes)
+      .reduce((obj, messageType) => ({...obj, [messageType.key]: 0}), {})
+
+  if (! processes[job.processId]) {
+    processes[job.processId] = {
+      ...initCounts,
+      jobid: job.processId,
+      ageCategory: '',
+      nettoDuration: '0:00:00',
+      brutoDuration: '0:00:00',
+      endtime: job.rawEndtime,
+      jobs: []
+    }
+  }
+  const process = processes[job.processId]
+
+  // Add job to process jobs
+  process.jobs.push(job)
+  // Update message counts
+  Object.keys(initCounts).forEach(cnt => process[cnt] += job[cnt])
+  // Process is characterised by first job (last in list of jobs) so copy last known job contents
+  const attributes = [
+    "processId",
+    "day",
+    "name",
+    "source",
+    "application",
+    "catalogue",
+    "entity",
+    "attribute",
+    "user"
+  ]
+  attributes.forEach(attr => process[attr] = job[attr])
+  // Unique jobid
+  process.jobid = `P_${job.jobid}`
+  // Latest endtime
+  if (!job.rawEndtime) {
+    // One job is not finished => process is not finished
+    process.endtime = null
+  } else if (process.endtime && job.rawEndtime > process.endtime) {
+    // Set latest endtime but do not overwrite when one of the jobs has not finished
+    process.endtime = job.rawEndtime
+  }
+  // Starttime of first job of process
+  process.starttime = job.rawStarttime
+  // Set to most pessimistic status
+  const jobStatusses = process.jobs.map(job => job.status)
+  process.status = null
+  statusses.forEach(status => {
+    if (!process.status && jobStatusses.includes(status)) {
+      process.status = status
+    }
+  })
+  // Set to max age category
+  if (job.ageCategory > process.ageCategory) {
+    process.ageCategory = job.ageCategory
+  }
+  // Add durations
+  process.nettoDuration = addDurations(process.nettoDuration, job.nettoDuration)
+  process.brutoDuration = addDurations(process.brutoDuration, job.brutoDuration)
+  return process
 }
 
 export function jobRunsOnDate(job, date) {

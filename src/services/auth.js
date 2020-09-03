@@ -23,7 +23,7 @@ const setupKeycloack = () => {
     url: "https://iam.amsterdam.nl/auth",
     clientId: "iris"
   };
-  const keycloak = window.Keycloak(config);
+  const keycloak = (window.Keycloak && window.Keycloak(config)) || {};
 
   const init = async () => {
     const options = {

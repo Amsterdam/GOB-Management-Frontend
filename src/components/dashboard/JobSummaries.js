@@ -41,7 +41,7 @@ class JobSummaries extends React.Component {
     }
 
     componentDidMount = async () => {
-        if (this.props.allJobs.length === 0) {
+        if (this.props.allPrimaryJobs.length === 0) {
             const jobs = await loadJobs()
             this.props.setJobs(jobs)
         }
@@ -82,7 +82,7 @@ class JobSummaries extends React.Component {
     }
 
     loadCharts = async () => {
-        let recentJobs = this.props.allJobs.filter(job => job.execution === "recentste");
+        let recentJobs = this.props.allPrimaryJobs.filter(job => job.execution === "recentste");
         if (recentJobs.length === 0) {
             return
         }
@@ -285,7 +285,7 @@ class JobSummaries extends React.Component {
 function mapStateToProps(state) {
     return {
         ...state.dashboard,
-        allJobs: state.jobs.allJobs
+        allPrimaryJobs: state.jobs.allPrimaryJobs
     }
 }
 

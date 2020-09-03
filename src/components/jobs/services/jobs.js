@@ -1,4 +1,4 @@
-import {getJobs} from "../../../services/gob";
+import {AGGREGATE_ON_JOB, AGGREGATE_ON_PROCESS, getJobs} from "../../../services/gob";
 
 export const MESSAGE_TYPES = "messageTypes"
 
@@ -13,17 +13,13 @@ export const filterTypes = [
     {text: "Leeftijd", key: "ageCategory", defaultOpen: false},
     {text: "Bron", key: "source", defaultOpen: false},
     {text: "Applicatie", key: "application", defaultOpen: false},
+    {text: "View", key: "aggregateLevel", defaultOpen: false, hidden: true}
 ]
 
-export const messageTypes = [
-    {text: "Info", key: "infos"},
-    {text: "Warning", key: "warnings"},
-    {text: "Error", key: "errors"},
-    {text: "Data Info", key: "datainfos"},
-    {text: "Data Warning", key: "datawarnings"},
-    {text: "Data Error", key: "dataerrors"}
-]
-
+export const aggregationTitles = {
+    [AGGREGATE_ON_JOB]: "Jobs",
+    [AGGREGATE_ON_PROCESS]: "Processen"
+}
 
 export function filterName(filterValue) {
     return filterValue.toLowerCase().replace(/_/g, " ")
@@ -36,6 +32,7 @@ export function getState(props) {
 
     return {
         jobid: props.currentJob.jobid,
+        processid: props.currentProcessId,
         ...filters(props)
     }
 }
