@@ -5,6 +5,7 @@ import Chart from "react-google-charts";
 import {setBrutoNetto} from "./dashboardSlice";
 import {defaultOrdering} from "./services/dashboard";
 import {withRouter} from "react-router-dom";
+import {AGGREGATE_ON_JOB} from "../../services/gob";
 
 function getConvertOptionsFunc(chartType) {
     return window.google && window.google.charts && window.google.charts[chartType]
@@ -107,6 +108,7 @@ class LastWeek extends React.Component {
             const [day, month] = date.substring(3).split("-");  // "dd DD-MM"
 
             const query = {
+                aggregateLevel: AGGREGATE_ON_JOB,
                 catalogue: this.props.catalog,
                 year: new Date().getFullYear(),
                 day: day,
