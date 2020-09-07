@@ -31,4 +31,15 @@ it("should memoize method results for a maximum number of seconds", async () => 
 
     expect(await m(10)).toBe(20)
     expect(nRealCalls).toBe(4)  // Other arguments!
+
+    // Memoize forever
+    m = memoize(n => double(n))
+    MockDate.set(new Date('2020', 1, 1, 12, 0, 0).toISOString())
+    expect(await m(5)).toBe(10)
+    expect(nRealCalls).toBe(5)
+    MockDate.set(new Date('2025', 1, 1, 12, 0, 0).toISOString())
+    await m(5)
+    MockDate.set(new Date('2030', 1, 1, 12, 0, 0).toISOString())
+    await m(5)
+    expect(nRealCalls).toBe(5)
 })
