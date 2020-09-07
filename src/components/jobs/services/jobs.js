@@ -47,25 +47,21 @@ export function filterJobs(jobs, filter) {
     return jobs.filter(job => {
         return Object.entries(jobsFilter).reduce((result, [key, values]) => {
             let match = false;
-            if (values.length === 0) {
-                match = true
-            } else {
-                const specialKeys = [MESSAGE_TYPES, "year", "month", "day"]
-                if (specialKeys.includes(key)) {
-                    if (key === MESSAGE_TYPES) {
-                        match = values.reduce((s, t) => s + job[t], 0) > 0
-                    } else {
-                        const jobDate = new Date(job.isoStarttime)
-                        const dtElements = {
-                            year: jobDate.getFullYear(),
-                            month: jobDate.getMonth() + 1,
-                            day: jobDate.getDate()
-                        }
-                        match = values.includes(dtElements[key])
-                    }
+            const specialKeys = [MESSAGE_TYPES, "year", "month", "day"]
+            if (specialKeys.includes(key)) {
+                if (key === MESSAGE_TYPES) {
+                    match = values.reduce((s, t) => s + job[t], 0) > 0
                 } else {
-                    match = job[key] && values.includes(filterName(job[key]))
+                    const jobDate = new Date(job.isoStarttime)
+                    const dtElements = {
+                        year: jobDate.getFullYear(),
+                        month: jobDate.getMonth() + 1,
+                        day: jobDate.getDate()
+                    }
+                    match = values.includes(dtElements[key])
                 }
+            } else {
+                match = job[key] && values.includes(filterName(job[key]))
             }
             return match && result
         }, true)
