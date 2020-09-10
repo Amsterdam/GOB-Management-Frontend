@@ -31,7 +31,7 @@ class JobDetailPage extends React.Component {
         }
 
         var jobs = await getJobs({jobid: jobId});
-        const job = jobs[0];
+        const job = jobs[1];    // 0 is process
 
         this.setState({job, jobInfo, loading: false})
     }
