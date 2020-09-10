@@ -5,7 +5,7 @@ export const lastAPIError = {
 
 function APIError(error, text) {
     lastAPIError.error = error;
-    lastAPIError.text = text;
+    lastAPIError.text = text || '';
     return {}
 }
 
@@ -15,7 +15,7 @@ export async function guardedGet(url, getContent) {
     try {
         const response = await fetch(url)
         if (!response.ok) {
-            throw new Error(response.statusText);
+            throw response.statusText;
         }
         const result = await getContent(response)
         return result

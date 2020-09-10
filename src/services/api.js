@@ -1,6 +1,7 @@
 import {CONNECT_TO_LOCAL_API, ACCEPTANCE_API} from "./config"
 
 export function get_api() {
+  // Returns the address of the GOB Management API
   let api;
   if (CONNECT_TO_LOCAL_API) {
     var base = "";
@@ -17,5 +18,6 @@ export function get_api() {
 }
 
 export function get_gob_api() {
+  // Returns the address of the GOB API
   return get_api().replace("8143", "8141");
 }

@@ -163,7 +163,7 @@ export async function createJob(action, catalogue, collection, product, user) {
   }
 }
 
-function isZombie(job) {
+export function isZombie(job) {
   if (job.status === "started") {
     const runtime = moment
       .duration(moment(Date.now()).diff(moment(job.isoStarttime)))
@@ -173,7 +173,7 @@ function isZombie(job) {
   return false;
 }
 
-function getDurationSecs(duration, starttime, endtime) {
+export function getDurationSecs(duration, starttime, endtime) {
   if (duration) {
     const parts = duration.split(":");
     if (parts.length === 3) {
@@ -385,10 +385,6 @@ export function jobRunsOnDate(job, date) {
   return startDate <= date && date <= endDate;
 }
 
-export function getSecure() {
-  get("gob_management/secure/");
-}
-
 export async function getQueues() {
   const result = await get("gob_management/queues/");
   if (result.ok) {
@@ -401,12 +397,12 @@ export async function getQueues() {
 /**
  * ISO datetime string to day-month format:
  *
- * 2020-04-20T11:31:25.819Z => 20-04
+ * 2020-04-20T11:31:25.819Z => Mo 20-04
  *
  * @param dtString
  * @returns {string}
  */
-function formatDate(dtString) {
+export function formatDate(dtString) {
   let dt = new Date(dtString);
   return moment(dt).tz(TZ).format("dd DD-MM")
 }
@@ -419,7 +415,7 @@ function formatDate(dtString) {
  * @param key
  * @returns {any[]}
  */
-function uniqueValues(listOfObjects, key) {
+export function uniqueValues(listOfObjects, key) {
   // Filters get unique values for key from listOfObjects, ignoring null values.
   return [...new Set(listOfObjects.filter(o => o[key]).map(o => o[key]))];
 }
