@@ -77,6 +77,16 @@ export async function getJob(id) {
   var data = await queryJob(id);
 
   var jobinfos = data.jobinfo;
+  if (jobinfos) {
+    // jobInfo args is a jsonified string
+    jobinfos.forEach(jobInfo => {
+      jobInfo.args = JSON.parse((jobInfo.args || "[]").replace(/'/g, '"'))
+      // export to Database => dump
+      if (jobInfo.type === 'export' && jobInfo.args.includes('Database')) {
+        jobInfo.type = 'dump'
+      }
+    })
+  }
   return jobinfos ? jobinfos[0] : null;
 }
 
