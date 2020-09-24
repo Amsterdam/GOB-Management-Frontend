@@ -132,7 +132,9 @@ it("should provide logs", async () => {
 
 it("should provide job", async () => {
     let mockJob = jest.fn(async id => ({
-        jobinfo: id
+        jobinfo: [{
+            id
+        }]
     }))
     jest.mock("../graphql/queries", () => ({
         queryJob: mockJob
@@ -140,12 +142,43 @@ it("should provide job", async () => {
     const { getJob } = require("./gob")
 
     let result = await getJob([1, 2, 3])
-    expect(result).toEqual(1)
+    expect(result).toEqual({"args": [], "id": [1, 2, 3]})
 
     result = await getJob([2, 3])
-    expect(result).toEqual(2)
+    expect(result).toEqual({"args": [], "id": [2, 3]})
 
     result = await getJob(null)
+    expect(result).toEqual({"args": [], "id": null})
+})
+
+it("recognizes dump jobs", async () => {
+    let mockJob = jest.fn(async () => ({
+        jobinfo: [{
+            id: 'any id',
+            args: "['a', 'Database', 'b']",
+            type: "export"
+        }]
+    }))
+    jest.mock("../graphql/queries", () => ({
+        queryJob: mockJob
+    }))
+    const { getJob } = require("./gob")
+
+    let result = await getJob()
+    expect(result).toEqual({
+        args: ["a", "Database", "b"],
+        id: "any id",
+        type: "dump"
+    })
+})
+
+it("handles empty job responses", async () => {
+    jest.mock("../graphql/queries", () => ({
+        queryJob: () => ({data: null})
+    }))
+    const { getJob } = require("./gob")
+
+    let result = await getJob()
     expect(result).toEqual(null)
 })
 
