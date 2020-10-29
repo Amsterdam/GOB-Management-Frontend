@@ -22,7 +22,8 @@ export function saveToUrl(history, vars) {
             [v]: vars[v]
         }), {})
     search = "?" + new URLSearchParams(search)
-    history.replace({search})
+    let hash = history.location.hash;
+    history.replace({search, hash})
 }
 
 export async function history2state(history, stateVars, current) {
