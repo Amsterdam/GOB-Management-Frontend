@@ -11,7 +11,8 @@ Icons are mainly imported from the [Font Awesome](https://github.com/FortAwesome
 
 ## Dependencies
 
-The [GOB Management API](https://github.com/Amsterdam/GOB-Management) should be up.
+Both the [GOB Management API](https://github.com/Amsterdam/GOB-Management) and the [GOB API](https://github.com/Amsterdam/GOB-API) should be up.
+To be able to run the GOB API a running [GOB infrastructure](https://github.com/Amsterdam/GOB-Infra) is required.
 
 # Docker
 
