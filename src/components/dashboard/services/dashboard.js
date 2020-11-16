@@ -7,6 +7,7 @@ export const defaultOrdering = [
     "relate",
     "export",
     "export_test",
+    "distribute",
     "dump",
     "data consistency test"
 ];
