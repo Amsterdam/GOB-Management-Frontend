@@ -34,7 +34,7 @@ const JobHeader = props => {
     }
 
     const badges = () => {
-        const dataLink = `${get_gob_api()}gob/dump/qa/${job.catalogue}_${job.entity}?format=csv`;
+        const dataLink = `${get_gob_api()}gob/public/dump/qa/${job.catalogue}_${job.entity}?format=csv`;
 
         const levels = {
             infos: {},
