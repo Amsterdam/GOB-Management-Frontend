@@ -9,12 +9,16 @@ export function runsLocally() {
   return window.location.hostname.includes("localhost");
 }
 
+export function runsOnTest() {
+  return window.location.hostname.includes("test");
+}
+
 export function runsOnAcceptance() {
   return window.location.hostname.includes("acc");
 }
 
 export function runsOnProduction() {
-  return !(runsLocally() || runsOnAcceptance());
+  return !(runsLocally() || runsOnTest() || runsOnAcceptance());
 }
 
 const setupKeycloack = () => {

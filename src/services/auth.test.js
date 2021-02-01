@@ -1,4 +1,4 @@
-import {runsLocally, runsOnAcceptance, runsOnProduction} from "./auth"
+import {runsLocally, runsOnTest, runsOnAcceptance, runsOnProduction} from "./auth"
 
 beforeEach(() => jest.resetModules());
 
@@ -11,6 +11,18 @@ it("can tell in which environment it runs", () => {
     }));
 
     expect(runsLocally()).toEqual(true)
+    expect(runsOnTest()).toEqual(false)
+    expect(runsOnAcceptance()).toEqual(false)
+    expect(runsOnProduction()).toEqual(false)
+
+    windowSpy.mockImplementation(() => ({
+        location: {
+            hostname: 'some.test.env'
+        },
+    }));
+
+    expect(runsLocally()).toEqual(false)
+    expect(runsOnTest()).toEqual(true)
     expect(runsOnAcceptance()).toEqual(false)
     expect(runsOnProduction()).toEqual(false)
 
@@ -21,6 +33,7 @@ it("can tell in which environment it runs", () => {
     }));
 
     expect(runsLocally()).toEqual(false)
+    expect(runsOnTest()).toEqual(false)
     expect(runsOnAcceptance()).toEqual(true)
     expect(runsOnProduction()).toEqual(false)
 
@@ -31,6 +44,7 @@ it("can tell in which environment it runs", () => {
     }));
 
     expect(runsLocally()).toEqual(false)
+    expect(runsOnTest()).toEqual(false)
     expect(runsOnAcceptance()).toEqual(false)
     expect(runsOnProduction()).toEqual(true)
 })
