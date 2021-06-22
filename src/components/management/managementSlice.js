@@ -29,7 +29,7 @@ export const managementSlice = createSlice({
                 state.catalog = catalog;
                 state.collections = [];
                 let actions = ["Import", "Relate", "Export", "Dump", "Export Test"]
-                state.actions = ["brk", "woz", "wkpb"].indexOf(catalog) >= 0 ? ["Prepare", ...actions] : actions
+                state.actions = ["brk", "brp", "woz", "wkpb"].indexOf(catalog) >= 0 ? ["Prepare", ...actions] : actions
                 state.product = "";
             }
         },

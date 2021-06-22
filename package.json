@@ -38,6 +38,8 @@
     "**/**/node-forge": "^0.10.0",
     "**/**/node-fetch": "^2.6.1",
     "**/node-notifier": "^8.0.1",
+    "**/**/css-what": "^5.0.1",
+    "**/**/normalize-url": "^4.0.1",
     "**/immer": "^8.0.1"
   },
   "scripts": {
