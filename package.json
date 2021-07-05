@@ -14,10 +14,12 @@
     "@testing-library/user-event": "^7.1.2",
     "bootstrap": "^4.5.0",
     "graphql-request": "^2.0.0",
+    "immer": "^8.0.1",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.21",
     "moment": "^2.27.0",
     "moment-timezone": "^0.5.31",
+    "node-notifier": "^8.0.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-calendar": "^3.1.0",
@@ -40,7 +42,8 @@
     "**/node-notifier": "^8.0.1",
     "**/**/css-what": "^5.0.1",
     "**/**/normalize-url": "^4.0.1",
-    "**/immer": "^8.0.1"
+    "**/immer": "^8.0.1",
+    "@testing-library/dom": "^7.31.2"
   },
   "scripts": {
     "start": "PORT=8080 react-scripts start",
