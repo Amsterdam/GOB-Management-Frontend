@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@datapunt/asc-assets": "^0.21.2-alpha.0",
-    "@datapunt/asc-ui": "^0.21.2-alpha.0",
+    "@datapunt/asc-assets": "^0.24.4",
+    "@datapunt/asc-ui": "^0.24.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.29",
     "@fortawesome/free-solid-svg-icons": "^5.13.1",
     "@fortawesome/react-fontawesome": "^0.1.11",
@@ -14,7 +14,7 @@
     "@testing-library/user-event": "^7.1.2",
     "bootstrap": "^4.5.0",
     "graphql-request": "^2.0.0",
-    "jwt-decode": "^2.2.0",
+    "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "moment": "^2.27.0",
     "moment-timezone": "^0.5.31",
@@ -40,7 +40,14 @@
     "**/node-notifier": "^8.0.1",
     "**/**/css-what": "^5.0.1",
     "**/**/normalize-url": "^4.0.1",
-    "**/immer": "^8.0.1"
+    "**/immer": "^9.0.6",
+    "**/glob-parent": "^6.0.2",
+    "ansi-html": "https://registry.npmjs.org/ansi-html-community/-/ansi-html-community-0.0.8.tgz",
+    "ansi-regex": "^5.0.1",
+    "react-dev-utils": "^11.0.4",
+    "nth-check": "^2.0.1",
+    "postcss": "^7.0.36",
+    "browserslist": "^4.16.5"
   },
   "scripts": {
     "start": "PORT=8080 react-scripts start",
