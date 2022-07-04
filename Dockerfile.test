@@ -7,6 +7,7 @@ EXPOSE 80
 RUN apt-get update && apt-get install -y git nginx && rm -rf /var/lib/apt/lists/*
 
 COPY package.json /app/
+COPY yarn.lock /app/
 
 WORKDIR /app
 

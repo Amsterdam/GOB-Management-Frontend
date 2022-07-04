@@ -157,7 +157,7 @@ it("Supports keycloak roles", async () => {
 
     const setupKeycloack = require("./auth").default
 
-    jest.useFakeTimers();
+    jest.useFakeTimers("legacy");
 
     expect(setupKeycloack.isAdmin()).toEqual(true)
     keycloak.onAuthSuccess()
