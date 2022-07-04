@@ -8,6 +8,9 @@ export const managementSlice = createSlice({
         catalog: "",
         collections: [],
         catalogOnlyActions: ["Prepare", "Export Test"],
+        hideCollections: {
+            gebieden: ["ggpgebieden"]
+        },
         actions: [],
         action: "",
         productActions: ["Export", "Relate"],
@@ -29,7 +32,7 @@ export const managementSlice = createSlice({
                 state.catalog = catalog;
                 state.collections = [];
                 let actions = ["Import", "Relate", "Export", "Dump", "Export Test"]
-                state.actions = ["brk", "brp", "woz", "wkpb"].indexOf(catalog) >= 0 ? ["Prepare", ...actions] : actions
+                state.actions = ["brk", "brp", "woz"].indexOf(catalog) >= 0 ? ["Prepare", ...actions] : actions
                 state.product = "";
             }
         },
