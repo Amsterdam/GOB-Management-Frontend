@@ -3,7 +3,7 @@ import {getCatalogCollections as _getCatalogCollections,
 import auth from "../../../services/auth";
 
 export async function getCatalogCollections() {
-    const exclude = ['rel', 'test_catalogue', 'qa']
+    const exclude = ['rel', 'test_catalogue', 'qa', 'wkpb']
     let catalogCollections = await _getCatalogCollections();
     return Object.keys(catalogCollections)
         .filter(catalog => !exclude.includes(catalog))

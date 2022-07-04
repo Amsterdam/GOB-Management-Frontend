@@ -89,6 +89,7 @@
   },
   "devDependencies": {
     "jest-fetch-mock": "^3.0.3",
-    "mockdate": "^3.0.2"
+    "mockdate": "^3.0.2",
+    "redux-mock-store": "^1.5.4"
   }
 }

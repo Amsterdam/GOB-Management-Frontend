@@ -72,11 +72,12 @@ class ManagementPage extends React.Component {
 
         const collections = () => {
             const catalog = this.props.catalog
+            const hideCollections = this.props.hideCollections[catalog] || []
             const collections = this.props.catalogCollections[catalog] || []
             const disabled = this.props.catalogOnlyActions.includes(this.props.action)
             return (
                 <div>
-                    {collections.map(collection => (
+                    {collections.filter(collection => !hideCollections.includes(collection)).map(collection => (
                         <Label label={collection} key={collection} disabled={disabled}>
                             <Checkbox name={collection}
                                       variant="primary"
