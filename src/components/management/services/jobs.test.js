@@ -16,7 +16,8 @@ it("should provide for catalog collections", async () => {
         rel: "rel",
         test_catalogue: "test catalogue",
         qa: "qa",
-        any_catalog: "any catalog"
+        any_catalog: "any catalog",
+        wkpb: "wkpb",
     }))
     expect(await getCatalogCollections()).toEqual({
         any_catalog: "any catalog"
