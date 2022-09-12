@@ -1,8 +1,8 @@
-version: '3.0'
+version: "3.7"
 services:
   test:
     build:
       context: ../..
-      dockerfile: Dockerfile.test
+      target: test
     command: >
       bash -c "./test.sh"

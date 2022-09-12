@@ -7,7 +7,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 The project uses the [Amsterdam Styled Components](https://github.com/Amsterdam/amsterdam-styled-components) for most of its UI elements. 
 [React-Bootstrap](https://react-bootstrap.github.io/) is used for any remaining styling issues.
 
-Icons are mainly imported from the [Font Awesome](https://github.com/FortAwesome/react-fontawesome) library
+Icons are mainly imported from the [Font Awesome](https://github.com/FortAwesome/react-fontawesome) library.
 
 ## Dependencies
 
@@ -18,23 +18,23 @@ To be able to run the GOB API a running [GOB infrastructure](https://github.com/
 
 ## Requirements
 
-* docker-compose >= 1.17
-* docker ce >= 18.03
+* docker compose >= 1.25
+* Docker CE >= 18.09
 
 ## Run
 
 ```bash
-docker-compose build
-docker-compose up &
+docker compose build
+docker compose up &
 ```
 
-Open http://localhost:8080 to view it in the browser.
+Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
 
 ## Tests
 
 ```bash
-docker-compose -f .jenkins/test/docker-compose.yml build
-docker-compose -f .jenkins/test/docker-compose.yml run test
+docker compose -f .jenkins/test/docker-compose.yml build
+docker compose -f .jenkins/test/docker-compose.yml run --rm test
 ```
 
 # Local
@@ -100,7 +100,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 ## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+You can learn more in the [Create React App documentation](https://create-react-app.dev/docs/getting-started/).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
