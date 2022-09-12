@@ -1,15 +1,14 @@
-FROM node:14
-
+FROM node:14 as application
 MAINTAINER datapunt@amsterdam.nl
 
 EXPOSE 80
 
 RUN apt-get update && apt-get install -y git nginx && rm -rf /var/lib/apt/lists/*
 
+WORKDIR /app
+
 COPY package.json /app/
 COPY yarn.lock /app/
-
-WORKDIR /app
 
 ENV PATH=./node_modules/.bin/:~/node_modules/.bin/:$PATH
 RUN git config --global url."https://".insteadOf git:// && \
@@ -19,7 +18,7 @@ RUN git config --global url."https://".insteadOf git:// && \
 
 COPY src /app/src
 COPY public /app/public
-COPY default.conf /app
+COPY default.conf /etc/nginx/conf.d/
 
 RUN yarn build && cp -r /app/build/. /var/www/html/
 
@@ -29,5 +28,11 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 
 RUN rm -f /etc/nginx/sites-enabled/default
 
-COPY default.conf /etc/nginx/conf.d/
+
 CMD ["nginx", "-g", "daemon off;"]
+
+
+# Test.
+FROM application as test
+USER root
+COPY test.sh /app/
