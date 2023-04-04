@@ -84,7 +84,7 @@ class StatusQueues extends React.Component {
                                 {queue.tooltip || queue.display}
                             </td>
                             <td>
-                                {purgeQueueButton(queue)}
+                                {!queue.name.startsWith("gob.events") && purgeQueueButton(queue)}
                             </td>
                             <td>
                                 {waitingIndicator(queue.messages_ready, waiting)}
