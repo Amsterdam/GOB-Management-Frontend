@@ -58,10 +58,15 @@ it("Supports keycloak authorization locally", async () => {
         loadUserInfo: jest.fn(() => "user info"),
         updateToken: jest.fn()
     }
+    class KC {
+        constructor(config) {
+            return keycloak
+        }
+    }
 
     const windowSpy = jest.spyOn(global, "window", "get");
     windowSpy.mockImplementation(() => ({
-        Keycloak: config => keycloak,
+        Keycloak: KC,
         location: {
             hostname: 'localhost'
         },
@@ -113,9 +118,15 @@ it("Supports keycloak authorization on production", async () => {
         logout: jest.fn()
     }
 
+    class KC {
+        constructor(config) {
+            return keycloak
+        }
+    }
+
     const windowSpy = jest.spyOn(global, "window", "get");
     windowSpy.mockImplementation(() => ({
-        Keycloak: config => keycloak,
+        Keycloak: KC,
         location: {
             hostname: 'any host'
         },
@@ -143,9 +154,15 @@ it("Supports keycloak roles", async () => {
         updateToken: jest.fn()
     }
 
+    class KC {
+        constructor(config) {
+            return keycloak
+        }
+    }
+
     const windowSpy = jest.spyOn(global, "window", "get");
     windowSpy.mockImplementation(() => ({
-        Keycloak: config => keycloak,
+        Keycloak: KC,
         location: {
             hostname: 'any host'
         },
