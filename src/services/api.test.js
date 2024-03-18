@@ -17,7 +17,7 @@ it("should provide for an api address when connecting to a local API", () => {
         },
     }));
 
-    expect(get_api()).toEqual("any protocol//any production api/")
+    expect(get_api()).toEqual("any production api")
 
     // localhost will point to 127.0.0.1
     windowSpy.mockImplementation(() => ({
