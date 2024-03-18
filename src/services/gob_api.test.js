@@ -16,12 +16,12 @@ beforeEach(() => {
 
 it("should call the GOB API and return the guarded get response for locks", async () => {
     const locks = await getDbLocks()
-    expect(guardedGet).toHaveBeenCalledWith(`${mockAPI}gob/public/info/locks`, JSONResponse)
+    expect(guardedGet).toHaveBeenCalledWith(`${mockAPI}gob/public/info/locks/`, JSONResponse)
     expect(locks).toBe(mockGuardedGet)
 })
 
 it("should call the GOB API and return the guarded get response for queries", async () => {
     const queries = await getDbQueries()
-    expect(guardedGet).toHaveBeenCalledWith(`${mockAPI}gob/public/info/activity`, JSONResponse)
+    expect(guardedGet).toHaveBeenCalledWith(`${mockAPI}gob/public/info/activity/`, JSONResponse)
     expect(queries).toBe(mockGuardedGet)
 })
