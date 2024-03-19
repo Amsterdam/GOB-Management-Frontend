@@ -1,7 +1,7 @@
 import { get_api } from "../services/api";
 import { request } from "../services/request";
 
-const api = get_api() + "gob_management/graphql/";
+const api = get_api() + "gob_management/public/graphql/";
 
 async function graphql(query) {
   return request(api, query);
