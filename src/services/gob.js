@@ -91,7 +91,7 @@ export async function getJob(id) {
 }
 
 export async function getCatalogCollections() {
-  const result = await get("gob_management/catalogs/");
+  const result = await get("gob_management/public/catalogs/");
   if (result.ok) {
     return result.json();
   } else {
@@ -396,7 +396,7 @@ export function jobRunsOnDate(job, date) {
 }
 
 export async function getQueues() {
-  const result = await get("gob_management/queues/");
+  const result = await get("gob_management/public/queues/");
   if (result.ok) {
     return result.json();
   } else {
