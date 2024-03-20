@@ -4,7 +4,8 @@ beforeEach(() => jest.resetModules());
 
 it("should provide for an api address when connecting to a local API", () => {
     jest.mock("./config", () => ({
-        CONNECT_TO_LOCAL_API: true
+        CONNECT_TO_LOCAL_API: true,
+        PRODUCTION_API: 'any production api'
     }));
     const { get_api } = require("./api");
 
@@ -16,7 +17,7 @@ it("should provide for an api address when connecting to a local API", () => {
         },
     }));
 
-    expect(get_api()).toEqual("any protocol//any hostname/")
+    expect(get_api()).toEqual("any production api")
 
     // localhost will point to 127.0.0.1
     windowSpy.mockImplementation(() => ({
@@ -27,6 +28,16 @@ it("should provide for an api address when connecting to a local API", () => {
     }));
 
     expect(get_api()).toEqual("any protocol//127.0.0.1:8143/")
+
+    windowSpy.mockImplementation(() => ({
+        location: {
+            protocol: 'any protocol',
+            hostname: 'acc.iris.some-host'
+        },
+    }));
+
+    expect(get_api()).toEqual("any protocol//acc.api.some-host/")
+
 });
 
 it("should provide for an api address when connecting to the acceptance API", () => {
